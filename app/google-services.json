@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "223457823388",
+    "firebase_url": "https://idobeta.firebaseio.com",
+    "project_id": "idobeta",
+    "storage_bucket": "idobeta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223457823388:android:0396c0947fbeddb4397b59",
+        "android_client_info": {
+          "package_name": "com.example.idobeta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223457823388-p5dqed02735ktcslfkr4on8l1ctcjoqg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.idobeta",
+            "certificate_hash": "618921b8ab9f60104926634b6194704e52734f6d"
+          }
+        },
+        {
+          "client_id": "223457823388-2uuhkne923jcesmcsamp4ijq86eafj14.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaGhckwY8KYAFS-8W54ynk_UY9FQoOSbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223457823388-2uuhkne923jcesmcsamp4ijq86eafj14.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
