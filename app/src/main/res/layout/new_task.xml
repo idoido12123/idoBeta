@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top">
+
+    <EditText
+        android:id="@+id/orderName"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="enter your name"
+        android:textStyle="italic"
+        android:textSize="25dp"/>
+
+    <EditText
+        android:id="@+id/taskDes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="enter description of the task"
+        android:textStyle="italic"
+        android:textSize="25dp"/>
+
+    <EditText
+        android:id="@+id/startDate"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="date"
+        android:hint="enter start date"
+        android:textStyle="italic"
+        android:textSize="25dp"/>
+
+    <EditText
+        android:id="@+id/startTime"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="date"
+        android:hint="enter beginning time"
+        android:textStyle="italic"
+        android:textSize="25dp"/>
+
+    <EditText
+        android:id="@+id/endDate"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="date"
+        android:hint="enter end date"
+        android:textStyle="italic"
+        android:textSize="25dp"/>
+
+    <EditText
+        android:id="@+id/endTime"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="time"
+        android:hint="enter end time"
+        android:textStyle="italic"
+        android:textSize="25dp"/>
+</LinearLayout>

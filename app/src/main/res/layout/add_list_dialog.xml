@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top">
+
+
+    <EditText
+        android:id="@+id/Nreshima"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:inputType="textPersonName"
+        android:hint="new list's name" />
+
+    <EditText
+        android:id="@+id/ListDate"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:inputType="date"
+        android:hint="enter today's date"/>
+
+    <EditText
+        android:id="@+id/ListTime"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:inputType="time"
+        android:hint="what's the time?"/>
+
+
+</LinearLayout>

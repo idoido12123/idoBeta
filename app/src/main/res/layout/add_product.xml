@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top">
+
+    <EditText
+        android:id="@+id/orderName"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:inputType="textPersonName"
+        android:hint="enter your name"
+        android:textSize="20dp"
+        android:textStyle="italic"/>
+
+    <EditText
+        android:id="@+id/productName"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:inputType="textPersonName"
+        android:hint="product Name"
+        android:textStyle="italic"
+        android:textSize="20dp"/>
+
+    <EditText
+        android:id="@+id/productAmount"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:hint="product amount"
+        android:textStyle="italic"
+        android:textSize="20dp"
+        android:inputType="number" />
+
+</LinearLayout>
