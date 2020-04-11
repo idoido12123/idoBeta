@@ -9,6 +9,5 @@ public class FBref {
     public static DatabaseReference refFamily=FBDB.getReference("Family");
     public static DatabaseReference refShopLists=FBDB.getReference("ShopList");
     public static DatabaseReference refTasks=FBDB.getReference("Tasks");
-    public static DatabaseReference refProducts=FBDB.getReference("products");
 
 }

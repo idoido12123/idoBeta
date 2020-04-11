@@ -5,14 +5,14 @@ public class Task {
     String openDatime;
     String endDatime;
     String order;
-    boolean taskDone;
+    boolean active;
     public Task(){}
-    public Task(String teur,String openDatime,String endDatime,String order,boolean taskDone){
+    public Task(String teur,String openDatime,String endDatime,String order,boolean active){
         this.teur=teur;
         this.openDatime=openDatime;
         this.endDatime=endDatime;
         this.order=order;
-        this.taskDone=taskDone;
+        this.active=active;
     }
 
     public String getTeur() {
@@ -31,8 +31,9 @@ public class Task {
         return order;
     }
 
-    public boolean isTaskDone() {
-        return taskDone;
+
+    public boolean isActive() {
+        return active;
     }
 
     public void setEndDatime(String endDatime) {
@@ -51,7 +52,7 @@ public class Task {
         this.order = order;
     }
 
-    public void setTaskDone(boolean taskDone) {
-        this.taskDone = taskDone;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

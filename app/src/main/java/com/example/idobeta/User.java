@@ -30,10 +30,10 @@ public class User {
     public String getPassword() {
         return password;
     }
-    public boolean IsManager(){
+    public boolean getManager(){
         return this.manager;
     }
-    public boolean IsMushar(){
+    public boolean getMushar(){
         return this.meushar;
     }
 

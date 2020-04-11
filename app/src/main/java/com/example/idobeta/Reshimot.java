@@ -102,7 +102,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
                             flag=true;
                         }
                         if (flag==true){
-                            Toast.makeText(Reshimot.this, "enter another ListName name", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Reshimot.this, "enter another List name", Toast.LENGTH_SHORT).show();
                         }
                         if(flag==false){
                             NewList reshima = new NewList(Lname, Ldatime, true,familyName1);
@@ -131,6 +131,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     }
     public void click6(View view) {
         Intent t5 = new Intent(this, Matalot.class);
+        t5.putExtra("a",familyName1);
         startActivity(t5);
     }
 

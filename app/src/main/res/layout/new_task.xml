@@ -44,7 +44,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="date"
+        android:inputType="time"
         android:hint="enter beginning time"
         android:textStyle="italic"
         android:textSize="25dp"/>

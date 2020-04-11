@@ -26,9 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import static com.example.idobeta.FBref.FBDB;
-import static com.example.idobeta.FBref.refProducts;
 import static com.example.idobeta.FBref.refShopLists;
 
 public class ChosenList extends AppCompatActivity implements AdapterView.OnItemLongClickListener {

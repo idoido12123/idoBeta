@@ -40,7 +40,6 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
     ArrayList<String> FamilyList = new ArrayList<String>();
     Button signIn;
     Intent t3;
-    Button BTN;
     String userName;
     String userID;
     String userEmail;
@@ -60,7 +59,6 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         listV = (ListView) findViewById(R.id.listV);
         switch2 = (Switch) findViewById(R.id.switch2);
         tv1 = (TextView) findViewById(R.id.tv1);
-        BTN = (Button) findViewById(R.id.button3);
         signIn = (Button) findViewById(R.id.signIn);
         listV.setVisibility(View.INVISIBLE);
         tv1.setVisibility(View.INVISIBLE);
@@ -134,7 +132,10 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                 if(flag==false){
                     Family family = new Family(lastName.getText().toString(), str);
                     user.setManager(true);
+                    user.setMeushar(true);
                     family.addUser(user);
+                    Task task=new Task("","","","",true);
+                    family.addTask(task);
                     refFamily.child(family.getFamilyUname()).setValue(family);
                 }
                 flag=false;
@@ -171,14 +172,8 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         t3=new Intent(this,Reshimot.class);
-        t3.putExtra("a",family1.getFamilyUname());
+        t3.putExtra("a",(String) listV.getItemAtPosition(i));
         startActivity(t3);
         return true;
     }
-
-
-    //public void click5(View view){
-     //   t3=new Intent(this,Reshimot.class);
-    //    startActivity(t3);
-   // }
 }
