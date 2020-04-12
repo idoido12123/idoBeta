@@ -25,27 +25,31 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import static com.example.idobeta.FBref.refFamily;
 import static com.example.idobeta.FBref.refShopLists;
 
-public class ChosenList extends AppCompatActivity implements AdapterView.OnItemLongClickListener {
+public class ChosenList extends AppCompatActivity implements AdapterView.OnItemLongClickListener,AdapterView.OnItemClickListener {
     AlertDialog.Builder addProduct1;
+    AlertDialog.Builder changeAmount;
     LinearLayout productDialog;
+    LinearLayout changeAmountDialog;
     Button addProduct;
     ListView products;
     TextView title;
     String lName;
+    String familyName;
     Intent getList1;
     ArrayList<Product> productsValues = new ArrayList<>();
     ArrayList<String> productsList = new ArrayList<>();
     EditText productName;
     EditText productAmount;
     EditText orderName;
-    NewList list;
-    int count=0;
-    Product product;
-
-
+    ArrayList<NewList>shopValues=new ArrayList<>();
+    ArrayList<NewList>listsHelper=new ArrayList<>();
+    ArrayList<Product>productsHelper=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,30 +59,35 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         title = (TextView) findViewById(R.id.title);
         getList1 = getIntent();
         lName = getList1.getExtras().getString("a");
+        familyName=getList1.getExtras().getString("b");
         title.setText(lName);
-         Query query = refShopLists.orderByChild("listName").equalTo(lName);
+         Query query = refFamily.orderByChild("familyUname").equalTo(familyName);
          ValueEventListener products1 = new ValueEventListener() {
              @Override
 
          public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            productsValues.clear();
-            productsList.clear();
-               for (DataSnapshot data : dataSnapshot.getChildren()) {
-                   list = data.getValue(NewList.class);
-                   productsValues=list.getProducts();
-               }
-         while(!productsValues.isEmpty()){
-             Product product=productsValues.remove(0);
-             if(product.getNorder().equals("")) {
-                 productsList.add("");
+                 productsValues.clear();
+                 productsList.clear();
+                 shopValues.clear();
+                 for (DataSnapshot data : dataSnapshot.getChildren()) {
+                     Family family = data.getValue(Family.class);
+                     shopValues = family.getLists();
+                     while (!shopValues.isEmpty()) {
+                         NewList list = shopValues.remove(0);
+                         if (list.getListName().equals(lName)) {
+                             productsValues = list.getProducts();
+                             while (!productsValues.isEmpty()) {
+                                 Product product = productsValues.remove(0);
+                                 if (!product.getNorder().equals("")) {
+                                     productsList.add(product.getNproduct() + " * " + product.getCamut() + " , order : " + product.getNorder());
+                                 }
+                             }
+                         }
+                     }
+                 }
+                 ArrayAdapter<String> adp = new ArrayAdapter<String>(ChosenList.this, R.layout.support_simple_spinner_dropdown_item, productsList);
+                 products.setAdapter(adp);
              }
-             else{
-                 productsList.add(product.getNproduct()+" * "+product.getCamut()+" , order: "+product.getNorder());
-             }
-         }
-         ArrayAdapter<String> adp = new ArrayAdapter<String>(ChosenList.this, R.layout.support_simple_spinner_dropdown_item, productsList);
-          products.setAdapter(adp);
-      }
 
       @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -106,15 +115,27 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
             if (i == DialogInterface.BUTTON_POSITIVE) {
                 final String Pname = productName.getText().toString();
                 final String Pamount =productAmount.getText().toString();
-                Query query = refShopLists.orderByChild("listName").equalTo(lName);
+                final String orderName1=orderName.getText().toString();
+                Query query = refFamily.orderByChild("familyUname").equalTo(familyName);
                 ValueEventListener addProduct = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        shopValues.clear();
+                        productsValues.clear();
+                        listsHelper.clear();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                           NewList list1=data.getValue(NewList.class);
-                           Product product1=new Product(Pname,Pamount,orderName.getText().toString());
-                           list1.addProduct(product1);
-                           refShopLists.child(list1.getListName()).setValue(list1);
+                            Family family = data.getValue(Family.class);
+                            shopValues=family.getLists();
+                            while (!shopValues.isEmpty()){
+                                NewList list=shopValues.remove(0);
+                                if(list.getListName().equals(lName)){
+                                   Product product=new Product(Pname,Pamount,orderName1);
+                                   list.addProduct(product);
+                                }
+                                listsHelper.add(list);
+                            }
+                            family.setLists(listsHelper);
+                            refFamily.child(familyName).setValue(family);
                         }
                     }
 
@@ -130,24 +151,33 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, final long l) {
-        final Query query = refShopLists.orderByChild("listName").equalTo(lName);
-        final ValueEventListener deleteProduct = new ValueEventListener() {
+         Query query = refFamily.orderByChild("familyUname").equalTo(familyName);
+         ValueEventListener deleteProduct = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                shopValues.clear();
                 productsValues.clear();
+                listsHelper.clear();
+                productsHelper.clear();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    NewList list1=data.getValue(NewList.class);
-                    productsValues=list1.getProducts();
-                    ArrayList productsValues2=list1.getProducts();
-                    while (!productsValues.isEmpty()){
-                        product=productsValues.remove(0);
-                        String str=product.getNproduct()+" * "+product.getCamut()+" , : "+product.getNorder();
-                        if(str.equals(products.getItemAtPosition(i))){
-                            list1.getProducts().remove(count);
+                    Family family = data.getValue(Family.class);
+                    shopValues=family.getLists();
+                    while (!shopValues.isEmpty()){
+                        NewList list=shopValues.remove(0);
+                        if(list.getListName().equals(lName)) {
+                            while (!list.getProducts().isEmpty()) {
+                                Product product = list.getProducts().remove(0);
+                                String str = product.getNproduct() + " * " + product.getCamut() + " , order : " + product.getNorder();
+                                if (!str.equals(products.getItemAtPosition(i))) {
+                                    productsHelper.add(product);
+                                }
+                            }
+                            list.setProducts(productsHelper);
                         }
-                        count++;
+                        listsHelper.add(list);
                     }
-                    refShopLists.child(list1.getListName()).setValue(list1);
+                    family.setLists(listsHelper);
+                    refFamily.child(familyName).setValue(family);
                 }
             }
 
@@ -158,5 +188,18 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         };
         query.addListenerForSingleValueEvent(deleteProduct);
         return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        changeAmountDialog=(LinearLayout) getLayoutInflater().inflate(R.layout.new_amount,null);
+        productName = (EditText) productDialog.findViewById(R.id.productName);
+        productAmount = (EditText) productDialog.findViewById(R.id.productAmount);
+        orderName = (EditText) productDialog.findViewById(R.id.orderName);
+        addProduct1 = new AlertDialog.Builder(this);
+        addProduct1.setView(productDialog);
+        addProduct1.setTitle("add new product");
+        addProduct1.setPositiveButton("OK", OKclick1);
+        addProduct1.show();
     }
 }

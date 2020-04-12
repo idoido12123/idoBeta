@@ -5,17 +5,15 @@ import java.util.ArrayList;
 public class NewList {
     String listName;
     String datetime;
-    boolean activ;
+    boolean active;
     ArrayList<Product> products;
-    String listFamily;
 
     public NewList(){}
-    public NewList(String listName, String datime,boolean activ,String listFamily){
+    public NewList(String listName, String datime,boolean active){
         this.listName=listName;
         this.datetime=datime;
-        this.activ=activ;
+        this.active=active;
         this.products=new ArrayList<Product>();
-        this.listFamily=listFamily;
     }
     public String getListName(){
         return this.listName;
@@ -24,16 +22,12 @@ public class NewList {
     public String getDatetime(){
         return this.datetime;
     }
-    public boolean getActiv(){
-        return this.activ;
+    public boolean getActive(){
+        return this.active;
     }
 
     public ArrayList<Product> getProducts() {
         return products;
-    }
-
-    public String getListFamily() {
-        return this.listFamily;
     }
 
     public void addProduct(Product product){
@@ -45,12 +39,8 @@ public class NewList {
     public void setDatetime(String date,String time){
         this.datetime=date+" "+time;
     }
-    public void setActiv(boolean activ){
-        this.activ=activ;
-    }
-
-    public void setListFamily(String listFamily) {
-        this.listFamily = listFamily;
+    public void setActive(boolean active){
+        this.active=active;
     }
 
     public void setProducts(ArrayList<Product> products) {

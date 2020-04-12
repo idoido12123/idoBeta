@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.example.idobeta.FBref.refFamily;
 import static com.example.idobeta.FBref.refShopLists;
 
 public class Reshimot extends AppCompatActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
@@ -42,6 +43,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     ArrayList<String> ShopList = new ArrayList<>();
     ArrayList<NewList> ShopValues = new ArrayList<>();
     boolean flag=false;
+    String listNhelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +53,19 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         BigList = (ListView) findViewById(R.id.ListOfLists);
         t4=getIntent();
         familyName1=t4.getExtras().getString("a");
-        Query query=refShopLists.orderByChild("listFamily").equalTo(familyName1);
+        Query query=refFamily.orderByChild("familyUname").equalTo(familyName1);
         ValueEventListener shopListListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot ds) {
                 ShopValues.clear();
                 ShopList.clear();
                 for (DataSnapshot data : ds.getChildren()) {
-                    String LIname = (String) data.getKey();
-                    ShopList.add(LIname);
+                    Family family=data.getValue(Family.class);
+                    ShopValues=family.getLists();
+                    while (!ShopValues.isEmpty()) {
+                        NewList list = ShopValues.remove(0);
+                        ShopList.add(list.getListName());
+                    }
                 }
                 ArrayAdapter<String> adp = new ArrayAdapter<String>(Reshimot.this, R.layout.support_simple_spinner_dropdown_item, ShopList);
                 BigList.setAdapter(adp);
@@ -94,23 +100,18 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             if (i == DialogInterface.BUTTON_POSITIVE) {
                 final String Lname = Nreshima.getText().toString();
                 final String Ldatime = ListDate.getText().toString() + " " + ListTime.getText().toString();
-                Query query=refShopLists.orderByChild("listName").equalTo(Nreshima.getText().toString());
+                Query query=refFamily.orderByChild("familyUname").equalTo(familyName1);
                 ValueEventListener addList = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot ds) {
-                        if(ds.exists()){
-                            flag=true;
-                        }
-                        if (flag==true){
-                            Toast.makeText(Reshimot.this, "enter another List name", Toast.LENGTH_SHORT).show();
-                        }
-                        if(flag==false){
-                            NewList reshima = new NewList(Lname, Ldatime, true,familyName1);
+                        for (DataSnapshot data:ds.getChildren()){
+                            Family family = data.getValue(Family.class);
+                            NewList list = new NewList(Lname, Ldatime,true);
                             Product product=new Product("","","");
-                            reshima.addProduct(product);
-                            refShopLists.child(reshima.getListName()).setValue(reshima);
+                            list.addProduct(product);
+                            family.addList(list);
+                            refFamily.child(familyName1).setValue(family);
                         }
-                        flag=false;
                     }
 
                     @Override
@@ -127,6 +128,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> Adapter, View view, int i, long l) {
         Intent chosenList = new Intent(this, ChosenList.class);
         chosenList.putExtra("a", (String) BigList.getItemAtPosition(i));
+        chosenList.putExtra("b",familyName1);
         startActivity(chosenList);
     }
     public void click6(View view) {
@@ -137,7 +139,8 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Query query = refShopLists.orderByChild("listName").equalTo((String) BigList.getItemAtPosition(i)).limitToFirst(1);
+        listNhelper=(String) BigList.getItemAtPosition(i);
+        Query query = refFamily.orderByChild("familyUname").equalTo(familyName1);
         query.addListenerForSingleValueEvent(Fvel);
         return true;
     }
@@ -146,9 +149,20 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             for (DataSnapshot data : dataSnapshot.getChildren()) {
-                reshima1=data.getValue(NewList.class);
+                Family family=data.getValue(Family.class);
+                ArrayList<NewList> listsValues = family.getLists();
+                ArrayList<NewList> listsHelper = new ArrayList<>();
+                listsHelper.add(listsValues.remove(0));
+                while (!listsValues.isEmpty()) {
+                    NewList list = listsValues.remove(0);
+                    String str = list.getListName();
+                    if (!str.equals(listNhelper)) {
+                        listsHelper.add(list);
+                    }
+                }
+                family.setLists(listsHelper);
+                refFamily.child(familyName1).setValue(family);
             }
-            refShopLists.child(reshima1.getListName()).removeValue();
         }
 
         @Override

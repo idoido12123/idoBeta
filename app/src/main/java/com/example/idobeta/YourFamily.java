@@ -135,10 +135,12 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                     user.setMeushar(true);
                     family.addUser(user);
                     Task task=new Task("","","","",true);
+                    NewList list=new NewList("","",false);
                     family.addTask(task);
+                    family.addList(list);
                     refFamily.child(family.getFamilyUname()).setValue(family);
                 }
-                flag=false;
+                 flag=false;
             }
 
         }

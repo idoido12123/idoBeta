@@ -10,7 +10,6 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     Button btn;
-    Intent t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         btn=(Button)findViewById(R.id.button);
     }
     public void click1(View view){
-        t1 = new Intent(this, Connect.class);
+        Intent t1 = new Intent(this, Connect.class);
         startActivity(t1);
     }
 }

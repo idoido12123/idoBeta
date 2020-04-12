@@ -1,14 +1,13 @@
 package com.example.idobeta;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
-    public class Family {
+public class Family {
         String familyUname;
         String lastName;
         ArrayList<User> users;
         ArrayList<Task> tasks;
+        ArrayList<NewList> lists;
 
         public Family(){}
         public Family(String lastName,String FamilyUname){
@@ -16,6 +15,7 @@ import java.util.List;
             this.familyUname=FamilyUname;
             this.users=new ArrayList<>();
             this.tasks=new ArrayList<>();
+            this.lists=new ArrayList<>();
         }
         public String getLastName(){
             return this.lastName;
@@ -32,6 +32,10 @@ import java.util.List;
             return this.tasks;
         }
 
+        public ArrayList<NewList> getLists() {
+            return lists;
+        }
+
         void addUser(User user){
             this.users.add(user);
         }
@@ -42,7 +46,15 @@ import java.util.List;
             this.tasks.add(task);
         }
 
+        public void addList(NewList list) {
+            this.lists.add(list);
+        }
+
         public void setTasks(ArrayList<Task> tasks) {
             this.tasks = tasks;
         }
+
+    public void setLists(ArrayList<NewList> lists) {
+        this.lists = lists;
     }
+}

@@ -43,6 +43,7 @@ public class Connect extends AppCompatActivity {
     Intent t2;
     User user1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +52,12 @@ public class Connect extends AppCompatActivity {
         pass = (EditText) findViewById(R.id.pass);
         email = (EditText) findViewById(R.id.email);
         switch1 = (Switch) findViewById(R.id.switch1);
-        finish1=(Button) findViewById(R.id.finish);
-        tvtitle=(TextView) findViewById(R.id.textV);
+        finish1 = (Button) findViewById(R.id.finish);
+        tvtitle = (TextView) findViewById(R.id.textV);
         mAuth1 = FirebaseAuth.getInstance();
 
     }
+
     public void OnSwitch(View view) {
         if (switch1.isChecked()) {
             tvtitle.setText("Login");
@@ -63,13 +65,13 @@ public class Connect extends AppCompatActivity {
             email.setVisibility(View.INVISIBLE);
             pass.setVisibility(View.INVISIBLE);
             finish1.setText("Login");
-        }
-        else{
+        } else {
             tvtitle.setText("Register");
             name.setVisibility(View.VISIBLE);
             email.setVisibility(View.VISIBLE);
             pass.setVisibility(View.VISIBLE);
-            finish1.setText("Register");}
+            finish1.setText("Register");
+        }
 
     }
 
@@ -105,19 +107,22 @@ public class Connect extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dS) {
                     if (dS.exists()) {
-                        for(DataSnapshot data : dS.getChildren()) {
+                        for (DataSnapshot data : dS.getChildren()) {
                             user1 = data.getValue(User.class);
                         }
                     }
+
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             };
             query.addListenerForSingleValueEvent(VEL);
-
         }
+
     }
+
    public void click3(View view){
         Intent getUser = new Intent(this, YourFamily.class);
         getUser.putExtra("a",user1.getUid());
