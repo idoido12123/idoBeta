@@ -60,12 +60,14 @@ public class Connect extends AppCompatActivity {
 
     public void OnSwitch(View view) {
         if (switch1.isChecked()) {
+            switch1.setText("click off if you want to sigh up");
             tvtitle.setText("Login");
             name.setVisibility(View.INVISIBLE);
             email.setVisibility(View.INVISIBLE);
             pass.setVisibility(View.INVISIBLE);
             finish1.setText("Login");
         } else {
+            switch1.setText("click on if you want to log in");
             tvtitle.setText("Register");
             name.setVisibility(View.VISIBLE);
             email.setVisibility(View.VISIBLE);
@@ -96,10 +98,11 @@ public class Connect extends AppCompatActivity {
                                 Toast.makeText((Connect.this), "Authentication failed", Toast.LENGTH_SHORT).show();
 
                             }
+                            ChooseFamily(user1);
                         }
                     });
-
-        } else {
+        }
+        else {
             FirebaseUser fbuser = mAuth1.getCurrentUser();
             String uid = fbuser.getUid();
             Query query = refUsers.orderByChild("uid").equalTo(uid);
@@ -109,9 +112,9 @@ public class Connect extends AppCompatActivity {
                     if (dS.exists()) {
                         for (DataSnapshot data : dS.getChildren()) {
                             user1 = data.getValue(User.class);
+                            ChooseFamily(user1);
                         }
                     }
-
                 }
 
                 @Override
@@ -120,10 +123,9 @@ public class Connect extends AppCompatActivity {
             };
             query.addListenerForSingleValueEvent(VEL);
         }
-
     }
 
-   public void click3(View view){
+   public void ChooseFamily(User user1){
         Intent getUser = new Intent(this, YourFamily.class);
         getUser.putExtra("a",user1.getUid());
         getUser.putExtra("b",user1.getName());

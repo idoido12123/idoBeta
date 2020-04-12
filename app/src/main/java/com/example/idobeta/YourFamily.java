@@ -46,8 +46,11 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
     String userPass;
     User user;
     boolean flag=false;
+    boolean flag2=false;
     Family family1;
     String str;
+   ArrayList<User> userHelper=new ArrayList<>();
+   int position;
 
 
     @Override
@@ -110,7 +113,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             UFname.setVisibility(View.VISIBLE);
             tv1.setVisibility(View.INVISIBLE);
             listV.setVisibility(View.INVISIBLE);
-            switch2.setText("click on if you your family is already sign in");
+            switch2.setText("click on if your family sign in");
         }
     }
 
@@ -152,18 +155,33 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Query query=refFamily.orderByChild("familyUname").equalTo((String) listV.getItemAtPosition(i)).limitToFirst(1);
+        Query query=refFamily.orderByChild("familyUname").equalTo((String) listV.getItemAtPosition(i));
         query.addListenerForSingleValueEvent(Fvel);
 
     }
     com.google.firebase.database.ValueEventListener Fvel=new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            userHelper.clear();
             for (DataSnapshot data : dataSnapshot.getChildren()) {
                 family1 = data.getValue(Family.class);
+                while (!family1.getUsers().isEmpty()) {
+                    User user1 = (User) family1.getUsers().remove(0);
+                    if (user1.getEmail().equals(userEmail)) {
+                        flag2 = true;
+                    }
+                    userHelper.add(user1);
+                }
             }
-            family1.addUser(user);
-            refFamily.child(family1.getFamilyUname()).setValue(family1);
+            if (flag2 == false) {
+                userHelper.add(user);
+                family1.setUsers(userHelper);
+                refFamily.child(family1.getFamilyUname()).setValue(family1);
+            }
+            else {
+                Toast.makeText(YourFamily.this, "you are member in this family", Toast.LENGTH_SHORT).show();
+            }
+            flag2=false;
         }
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -173,9 +191,40 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        t3=new Intent(this,Reshimot.class);
-        t3.putExtra("a",(String) listV.getItemAtPosition(i));
-        startActivity(t3);
-        return true;
+        position=i;
+         Query query= refFamily.orderByChild("familyUname").equalTo((String) listV.getItemAtPosition(i));
+         ValueEventListener checkUser=new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                 userHelper.clear();
+                 for(DataSnapshot data:dataSnapshot.getChildren()){
+                     Family family=data.getValue(Family.class);
+                     while(!family.getUsers().isEmpty()){
+                         User user= (User) family.getUsers().remove(0);
+                         if(user.getEmail().equals(userEmail)){
+                             flag2=true;
+                         }
+                     }
+                     moveToReshimot(flag2);
+                     flag2=false;
+                 }
+             }
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+         };
+         query.addListenerForSingleValueEvent(checkUser);
+         return true;
+    }
+    public void moveToReshimot(boolean flag){
+        if (flag2==false){
+            Toast.makeText(this, "you are not a member in this family", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            t3=new Intent(this,Reshimot.class);
+            t3.putExtra("a",(String) listV.getItemAtPosition(position));
+            startActivity(t3);
+        }
     }
 }

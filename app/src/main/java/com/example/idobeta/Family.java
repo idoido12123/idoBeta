@@ -3,7 +3,7 @@ package com.example.idobeta;
 import java.util.ArrayList;
 
 public class Family {
-        String familyUname;
+    String familyUname;
         String lastName;
         ArrayList<User> users;
         ArrayList<Task> tasks;
@@ -56,5 +56,9 @@ public class Family {
 
     public void setLists(ArrayList<NewList> lists) {
         this.lists = lists;
+    }
+
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
     }
 }

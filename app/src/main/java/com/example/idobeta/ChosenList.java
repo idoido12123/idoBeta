@@ -80,7 +80,7 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
                              productsValues = list.getProducts();
                              while (!productsValues.isEmpty()) {
                                  Product product = productsValues.remove(0);
-                                 if (!product.getNorder().equals("")) {
+                                 if (!product.getNproduct().equals("")) {
                                      productsList.add(product.getNproduct() + " * " + product.getCamut() + " , order : " + product.getNorder());
                                  }
                              }
