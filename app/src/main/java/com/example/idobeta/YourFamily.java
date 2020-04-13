@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.util.Log;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.example.idobeta.FBref.refFamily;
+import static com.example.idobeta.FBref.refUsers;
 
 public class YourFamily extends AppCompatActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
     Switch switch2;
@@ -45,12 +47,13 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
     String userEmail;
     String userPass;
     User user;
-    boolean flag=false;
-    boolean flag2=false;
+    boolean flag = false;
+    boolean flag2 = false;
     Family family1;
     String str;
-   ArrayList<User> userHelper=new ArrayList<>();
-   int position;
+    ArrayList<User> userHelper = new ArrayList<>();
+    int position;
+    Family family;
 
 
     @Override
@@ -90,12 +93,12 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         listV.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listV.setOnItemClickListener(this);
         listV.setOnItemLongClickListener(this);
-        t3=getIntent();
-        userID=t3.getExtras().getString("a");
-        userName=t3.getExtras().getString("b");
-        userEmail=t3.getExtras().getString("d");
-        userPass=t3.getExtras().getString("c");
-        user=new User(userID,userName,userPass,userEmail,false,false);
+        t3 = getIntent();
+        userID = t3.getExtras().getString("a");
+        userName = t3.getExtras().getString("b");
+        userEmail = t3.getExtras().getString("d");
+        userPass = t3.getExtras().getString("c");
+        user = new User(userID, userName, userPass, userEmail, false, false, "");
     }
 
 
@@ -118,35 +121,40 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
     }
 
     public void click4(View view) {
-        str=UFname.getText().toString();
-        Query query=refFamily.orderByChild("familyUname").equalTo(str);
+        str = UFname.getText().toString();
+        Query query = refFamily.orderByChild("familyUname").equalTo(str);
         query.addListenerForSingleValueEvent(addFamily);
     }
+
     ValueEventListener addFamily = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             {
-                if(dataSnapshot.exists()){
-                    flag=true;
+                if (dataSnapshot.exists()) {
+                    flag = true;
                 }
-                if (flag==true){
+                if (flag == true) {
                     Toast.makeText(YourFamily.this, "enter another family name", Toast.LENGTH_SHORT).show();
                 }
-                if(flag==false){
-                    Family family = new Family(lastName.getText().toString(), str);
+                if (flag == false) {
+                    family = new Family(lastName.getText().toString(), str);
                     user.setManager(true);
                     user.setMeushar(true);
                     family.addUser(user);
-                    Task task=new Task("","","","",true);
-                    NewList list=new NewList("","",false);
+                    Task task = new Task("", "", "", "", true);
+                    NewList list = new NewList("", "", false);
                     family.addTask(task);
                     family.addList(list);
                     refFamily.child(family.getFamilyUname()).setValue(family);
+                    flag2 = true;
+                    moveToReshimot(flag2);
                 }
-                 flag=false;
+                flag = false;
+                flag2 = false;
             }
 
         }
+
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
             Log.w("YourFamily", "Failed to read value.", databaseError.toException());
@@ -155,6 +163,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        position=i;
         Query query=refFamily.orderByChild("familyUname").equalTo((String) listV.getItemAtPosition(i));
         query.addListenerForSingleValueEvent(Fvel);
 
@@ -176,7 +185,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             if (flag2 == false) {
                 userHelper.add(user);
                 family1.setUsers(userHelper);
-                refFamily.child(family1.getFamilyUname()).setValue(family1);
+                refFamily.child((String) listV.getItemAtPosition(position)).setValue(family1);
             }
             else {
                 Toast.makeText(YourFamily.this, "you are member in this family", Toast.LENGTH_SHORT).show();
@@ -198,7 +207,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                  userHelper.clear();
                  for(DataSnapshot data:dataSnapshot.getChildren()){
-                     Family family=data.getValue(Family.class);
+                     family=data.getValue(Family.class);
                      while(!family.getUsers().isEmpty()){
                          User user= (User) family.getUsers().remove(0);
                          if(user.getEmail().equals(userEmail)){
@@ -222,8 +231,13 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             Toast.makeText(this, "you are not a member in this family", Toast.LENGTH_SHORT).show();
         }
         else{
+            SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+            SharedPreferences.Editor editor=settings.edit();
+            editor.putBoolean("haveFamily",true);
+            editor.putString("currentFamily",family.getFamilyUname());
+            editor.commit();
             t3=new Intent(this,Reshimot.class);
-            t3.putExtra("a",(String) listV.getItemAtPosition(position));
+            t3.putExtra("a",(String) family.getFamilyUname());
             startActivity(t3);
         }
     }

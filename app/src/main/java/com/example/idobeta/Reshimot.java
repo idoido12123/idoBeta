@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,8 +43,9 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     String familyName1;
     ArrayList<String> ShopList = new ArrayList<>();
     ArrayList<NewList> ShopValues = new ArrayList<>();
-    boolean flag=false;
+    boolean flag = false;
     String listNhelper;
+    Button logOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,17 +53,18 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         setContentView(R.layout.activity_reshimot);
         NewList = (Button) findViewById(R.id.NewList);
         BigList = (ListView) findViewById(R.id.ListOfLists);
-        t4=getIntent();
-        familyName1=t4.getExtras().getString("a");
-        Query query=refFamily.orderByChild("familyUname").equalTo(familyName1);
+        logOut=(Button)findViewById(R.id.logOut);
+        t4 = getIntent();
+        familyName1 = t4.getExtras().getString("a");
+        Query query = refFamily.orderByChild("familyUname").equalTo(familyName1);
         ValueEventListener shopListListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot ds) {
                 ShopValues.clear();
                 ShopList.clear();
                 for (DataSnapshot data : ds.getChildren()) {
-                    Family family=data.getValue(Family.class);
-                    ShopValues=family.getLists();
+                    Family family = data.getValue(Family.class);
+                    ShopValues = family.getLists();
                     while (!ShopValues.isEmpty()) {
                         NewList list = ShopValues.remove(0);
                         ShopList.add(list.getListName());
@@ -100,14 +103,14 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             if (i == DialogInterface.BUTTON_POSITIVE) {
                 final String Lname = Nreshima.getText().toString();
                 final String Ldatime = ListDate.getText().toString() + " " + ListTime.getText().toString();
-                Query query=refFamily.orderByChild("familyUname").equalTo(familyName1);
+                Query query = refFamily.orderByChild("familyUname").equalTo(familyName1);
                 ValueEventListener addList = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot ds) {
-                        for (DataSnapshot data:ds.getChildren()){
+                        for (DataSnapshot data : ds.getChildren()) {
                             Family family = data.getValue(Family.class);
-                            NewList list = new NewList(Lname, Ldatime,true);
-                            Product product=new Product("","","");
+                            NewList list = new NewList(Lname, Ldatime, true);
+                            Product product = new Product("", "", "");
                             list.addProduct(product);
                             family.addList(list);
                             refFamily.child(familyName1).setValue(family);
@@ -128,18 +131,19 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> Adapter, View view, int i, long l) {
         Intent chosenList = new Intent(this, ChosenList.class);
         chosenList.putExtra("a", (String) BigList.getItemAtPosition(i));
-        chosenList.putExtra("b",familyName1);
+        chosenList.putExtra("b", familyName1);
         startActivity(chosenList);
     }
+
     public void click6(View view) {
         Intent t5 = new Intent(this, Matalot.class);
-        t5.putExtra("a",familyName1);
+        t5.putExtra("a", familyName1);
         startActivity(t5);
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        listNhelper=(String) BigList.getItemAtPosition(i);
+        listNhelper = (String) BigList.getItemAtPosition(i);
         Query query = refFamily.orderByChild("familyUname").equalTo(familyName1);
         query.addListenerForSingleValueEvent(Fvel);
         return true;
@@ -149,7 +153,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             for (DataSnapshot data : dataSnapshot.getChildren()) {
-                Family family=data.getValue(Family.class);
+                Family family = data.getValue(Family.class);
                 ArrayList<NewList> listsValues = family.getLists();
                 ArrayList<NewList> listsHelper = new ArrayList<>();
                 listsHelper.add(listsValues.remove(0));
@@ -170,4 +174,13 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             Log.w("YourFamily", "Failed to read value.", databaseError.toException());
         }
     };
+    public void logOut(View view){
+        SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        SharedPreferences.Editor editor=settings.edit();
+        editor.putBoolean("haveFamily",false);
+        editor.putBoolean("stayConnect",false);
+        editor.commit();
+        Intent returnToConnect=new Intent(this,Connect.class);
+        startActivity(returnToConnect);
+    }
 }

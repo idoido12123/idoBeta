@@ -1,5 +1,7 @@
 package com.example.idobeta;
 
+import java.util.ArrayList;
+
 public class User {
     String uid;
     String name;
@@ -8,7 +10,7 @@ public class User {
     boolean manager;
     boolean meushar;
     public User(){}
-    public User(String uid,String name,String password,String email,boolean manager,boolean meushar){
+    public User(String uid,String name,String password,String email,boolean manager,boolean meushar,String family){
         this.uid=uid;
         this.name=name;
         this.manager=manager;
@@ -30,6 +32,8 @@ public class User {
     public String getPassword() {
         return password;
     }
+
+
     public boolean getManager(){
         return this.manager;
     }
@@ -57,5 +61,4 @@ public class User {
     public void setMeushar(Boolean meushar){
         this.meushar=meushar;
     }
-
 }

@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -31,6 +33,7 @@ import static com.example.idobeta.FBref.refFamily;
 import static com.example.idobeta.FBref.refUsers;
 
 public class Connect extends AppCompatActivity {
+    CheckBox checkBox;
     Switch switch1;
     EditText name;
     EditText email;
@@ -40,7 +43,6 @@ public class Connect extends AppCompatActivity {
     String password;
     Button finish1;
     TextView tvtitle;
-    Intent t2;
     User user1;
 
 
@@ -48,14 +50,15 @@ public class Connect extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
+        checkBox = (CheckBox) findViewById(R.id.checkBox1);
         name = (EditText) findViewById(R.id.name);
         pass = (EditText) findViewById(R.id.pass);
         email = (EditText) findViewById(R.id.email);
         switch1 = (Switch) findViewById(R.id.switch1);
         finish1 = (Button) findViewById(R.id.finish);
         tvtitle = (TextView) findViewById(R.id.textV);
+        checkBox = (CheckBox) findViewById(R.id.checkBox1);
         mAuth1 = FirebaseAuth.getInstance();
-
     }
 
     public void OnSwitch(View view) {
@@ -63,15 +66,11 @@ public class Connect extends AppCompatActivity {
             switch1.setText("click off if you want to sigh up");
             tvtitle.setText("Login");
             name.setVisibility(View.INVISIBLE);
-            email.setVisibility(View.INVISIBLE);
-            pass.setVisibility(View.INVISIBLE);
             finish1.setText("Login");
         } else {
             switch1.setText("click on if you want to log in");
             tvtitle.setText("Register");
             name.setVisibility(View.VISIBLE);
-            email.setVisibility(View.VISIBLE);
-            pass.setVisibility(View.VISIBLE);
             finish1.setText("Register");
         }
 
@@ -90,7 +89,7 @@ public class Connect extends AppCompatActivity {
                                 FirebaseUser fuser = mAuth1.getCurrentUser();
                                 String uid = fuser.getUid();
                                 String Uname = name.getText().toString();
-                                User userDB = new User(uid, Uname, password, email1, false, false);
+                                User userDB = new User(uid, Uname, password, email1, false, false, "");
                                 refUsers.child(uid).setValue(userDB);
                                 user1 = userDB;
                             } else {
@@ -98,11 +97,11 @@ public class Connect extends AppCompatActivity {
                                 Toast.makeText((Connect.this), "Authentication failed", Toast.LENGTH_SHORT).show();
 
                             }
-                            ChooseFamily(user1);
                         }
                     });
-        }
-        else {
+        } else {
+            final String pass1 = pass.getText().toString();
+            final String email2 = email.getText().toString();
             FirebaseUser fbuser = mAuth1.getCurrentUser();
             String uid = fbuser.getUid();
             Query query = refUsers.orderByChild("uid").equalTo(uid);
@@ -112,11 +111,18 @@ public class Connect extends AppCompatActivity {
                     if (dS.exists()) {
                         for (DataSnapshot data : dS.getChildren()) {
                             user1 = data.getValue(User.class);
-                            ChooseFamily(user1);
+                            if (user1.getEmail().equals(email2) && user1.getPassword().equals(pass1)) {
+                                    SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = settings.edit();
+                                    editor.putBoolean("stayConnect", true);
+                                    editor.commit();
+                                    ChooseFamily(user1);
+                            } else {
+                                Toast.makeText(Connect.this, "incorrect email or password", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
@@ -125,12 +131,12 @@ public class Connect extends AppCompatActivity {
         }
     }
 
-   public void ChooseFamily(User user1){
+    public void ChooseFamily(User user1) {
         Intent getUser = new Intent(this, YourFamily.class);
-        getUser.putExtra("a",user1.getUid());
-        getUser.putExtra("b",user1.getName());
-        getUser.putExtra("c",user1.getPassword());
-        getUser.putExtra("d",user1.getEmail());
+        getUser.putExtra("a", user1.getUid());
+        getUser.putExtra("b", user1.getName());
+        getUser.putExtra("c", user1.getPassword());
+        getUser.putExtra("d", user1.getEmail());
         startActivity(getUser);
     }
 }
