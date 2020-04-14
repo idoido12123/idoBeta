@@ -1,20 +1,14 @@
 package com.example.idobeta;
 
-import java.util.ArrayList;
-
 public class User {
     String uid;
     String name;
     String email;
     String password;
-    boolean manager;
-    boolean meushar;
     public User(){}
-    public User(String uid,String name,String password,String email,boolean manager,boolean meushar,String family){
+    public User(String uid,String name,String password,String email){
         this.uid=uid;
         this.name=name;
-        this.manager=manager;
-        this.meushar=meushar;
         this.password=password;
         this.email=email;
     }
@@ -33,14 +27,6 @@ public class User {
         return password;
     }
 
-
-    public boolean getManager(){
-        return this.manager;
-    }
-    public boolean getMushar(){
-        return this.meushar;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -54,11 +40,5 @@ public class User {
     }
     public void setName(String name){
         this.name=name;
-    }
-    public void setManager(Boolean manager){
-        this.manager=manager;
-    }
-    public void setMeushar(Boolean meushar){
-        this.meushar=meushar;
     }
 }

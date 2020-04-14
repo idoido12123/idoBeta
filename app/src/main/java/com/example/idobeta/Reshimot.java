@@ -19,28 +19,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
-import java.util.Date;
-
 import static com.example.idobeta.FBref.refFamily;
-import static com.example.idobeta.FBref.refShopLists;
 
 public class Reshimot extends AppCompatActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
     AlertDialog.Builder addList;
     LinearLayout listDialog;
+    TextView title;
     EditText Nreshima;
     EditText ListDate;
     EditText ListTime;
     Button NewList;
     ListView BigList;
-    ListView connectedFamilies;
     Intent t4;
     String familyName1;
     ArrayList<String> ShopList = new ArrayList<>();
@@ -53,6 +50,9 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         setContentView(R.layout.activity_reshimot);
         NewList = (Button) findViewById(R.id.NewList);
         BigList = (ListView) findViewById(R.id.ListOfLists);
+        title=(TextView)findViewById(R.id.textView) ;
+        SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        title.setText("welcome to family "+settings.getString("currentFamily",""));
         t4 = getIntent();
         familyName1 = t4.getExtras().getString("a");
         Query query = refFamily.orderByChild("familyUname").equalTo(familyName1);
@@ -246,6 +246,11 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
                 }
             };
             query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        if(st.equals("new requests")){
+            Intent go=new Intent(this,Requests.class);
+            go.putExtra("a",familyName1);
+            startActivity(go);
         }
         return true;
     }

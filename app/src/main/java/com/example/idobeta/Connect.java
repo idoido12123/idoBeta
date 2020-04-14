@@ -89,7 +89,7 @@ public class Connect extends AppCompatActivity {
                                 FirebaseUser fuser = mAuth1.getCurrentUser();
                                 String uid = fuser.getUid();
                                 String Uname = name.getText().toString();
-                                User userDB = new User(uid, Uname, password, email1, false, false, "");
+                                User userDB = new User(uid, Uname, password, email1);
                                 refUsers.child(uid).setValue(userDB);
                                 SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
                                 SharedPreferences.Editor editor=settings.edit();

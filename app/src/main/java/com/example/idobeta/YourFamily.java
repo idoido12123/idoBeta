@@ -98,7 +98,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         userName = t3.getExtras().getString("b");
         userEmail = t3.getExtras().getString("d");
         userPass = t3.getExtras().getString("c");
-        user = new User(userID, userName, userPass, userEmail, false, false, "");
+        user = new User(userID, userName, userPass, userEmail);
     }
 
 
@@ -138,13 +138,13 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                 }
                 if (flag == false) {
                     family = new Family(lastName.getText().toString(), str);
-                    user.setManager(true);
-                    user.setMeushar(true);
                     family.addUser(user);
                     Task task = new Task("", "", "", "", true);
                     NewList list = new NewList("", "", false);
+                    User request=new User("","","","");
                     family.addTask(task);
                     family.addList(list);
+                    family.addRequest(request);
                     refFamily.child(family.getFamilyUname()).setValue(family);
                     flag2 = true;
                     moveToReshimot(flag2);
@@ -164,9 +164,37 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         position=i;
+        Query query= refFamily.orderByChild("familyUname").equalTo((String) listV.getItemAtPosition(i));
+        ValueEventListener checkUser=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userHelper.clear();
+                for(DataSnapshot data:dataSnapshot.getChildren()){
+                    family=data.getValue(Family.class);
+                    while(!family.getUsers().isEmpty()){
+                        User user= (User) family.getUsers().remove(0);
+                        if(user.getEmail().equals(userEmail)){
+                            flag2=true;
+                        }
+                    }
+                    moveToReshimot(flag2);
+                    flag2=false;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        query.addListenerForSingleValueEvent(checkUser);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        position=i;
         Query query=refFamily.orderByChild("familyUname").equalTo((String) listV.getItemAtPosition(i));
         query.addListenerForSingleValueEvent(Fvel);
-
+        return true;
     }
     com.google.firebase.database.ValueEventListener Fvel=new ValueEventListener() {
         @Override
@@ -174,17 +202,18 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             userHelper.clear();
             for (DataSnapshot data : dataSnapshot.getChildren()) {
                 family1 = data.getValue(Family.class);
+                ArrayList<User>usersHelper=new ArrayList<>();
                 while (!family1.getUsers().isEmpty()) {
                     User user1 = (User) family1.getUsers().remove(0);
                     if (user1.getEmail().equals(userEmail)) {
                         flag2 = true;
                     }
-                    userHelper.add(user1);
+                    usersHelper.add(user1);
                 }
+                family1.setUsers(usersHelper);
             }
             if (flag2 == false) {
-                userHelper.add(user);
-                family1.setUsers(userHelper);
+                family1.addRequest(user);
                 refFamily.child((String) listV.getItemAtPosition(position)).setValue(family1);
             }
             else {
@@ -197,35 +226,6 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             Log.w("YourFamily", "Failed to read value.", databaseError.toException());
         }
     };
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        position=i;
-         Query query= refFamily.orderByChild("familyUname").equalTo((String) listV.getItemAtPosition(i));
-         ValueEventListener checkUser=new ValueEventListener() {
-             @Override
-             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                 userHelper.clear();
-                 for(DataSnapshot data:dataSnapshot.getChildren()){
-                     family=data.getValue(Family.class);
-                     while(!family.getUsers().isEmpty()){
-                         User user= (User) family.getUsers().remove(0);
-                         if(user.getEmail().equals(userEmail)){
-                             flag2=true;
-                         }
-                     }
-                     moveToReshimot(flag2);
-                     flag2=false;
-                 }
-             }
-             @Override
-             public void onCancelled(@NonNull DatabaseError databaseError) {
-
-             }
-         };
-         query.addListenerForSingleValueEvent(checkUser);
-         return true;
-    }
     public void moveToReshimot(boolean flag){
         if (flag2==false){
             Toast.makeText(this, "you are not a member in this family", Toast.LENGTH_SHORT).show();

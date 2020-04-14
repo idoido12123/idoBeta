@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChosenList"></activity>
+        <activity android:name=".Requests"></activity>
+        <activity android:name=".ChosenList" />
         <activity android:name=".Matalot" />
         <activity android:name=".Reshimot" />
         <activity android:name=".YourFamily" />

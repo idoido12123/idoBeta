@@ -8,6 +8,7 @@ public class Family {
         ArrayList<User> users;
         ArrayList<Task> tasks;
         ArrayList<NewList> lists;
+        ArrayList<User> requests;
 
         public Family(){}
         public Family(String lastName,String FamilyUname){
@@ -16,6 +17,7 @@ public class Family {
             this.users=new ArrayList<>();
             this.tasks=new ArrayList<>();
             this.lists=new ArrayList<>();
+            this.requests=new ArrayList<>();
         }
         public String getLastName(){
             return this.lastName;
@@ -36,7 +38,11 @@ public class Family {
             return lists;
         }
 
-        void addUser(User user){
+    public ArrayList<User> getRequests() {
+        return requests;
+    }
+
+    void addUser(User user){
             this.users.add(user);
         }
         public void setLastName(String lastName){
@@ -60,5 +66,12 @@ public class Family {
 
     public void setUsers(ArrayList<User> users) {
         this.users = users;
+    }
+
+    public void setRequests(ArrayList<User> requests) {
+        this.requests = requests;
+    }
+    public void addRequest(User user){
+            requests.add(user);
     }
 }

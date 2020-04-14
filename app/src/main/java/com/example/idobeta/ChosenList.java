@@ -6,8 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -48,6 +52,7 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
     EditText productAmount;
     EditText orderName;
     EditText newAmount;
+    String date="";
     ArrayList<NewList>shopValues=new ArrayList<>();
     ArrayList<NewList>listsHelper=new ArrayList<>();
     ArrayList<Product>productsHelper=new ArrayList<>();
@@ -62,7 +67,6 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         getList1 = getIntent();
         lName = getList1.getExtras().getString("a");
         familyName=getList1.getExtras().getString("b");
-        title.setText(lName);
          Query query = refFamily.orderByChild("familyUname").equalTo(familyName);
          ValueEventListener products1 = new ValueEventListener() {
              @Override
@@ -77,6 +81,8 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
                      while (!shopValues.isEmpty()) {
                          NewList list = shopValues.remove(0);
                          if (list.getListName().equals(lName)) {
+                             date=list.getDatetime();
+                             title.setText(lName + " " + date);
                              productsValues = list.getProducts();
                              while (!productsValues.isEmpty()) {
                                  Product product = productsValues.remove(0);
@@ -250,4 +256,95 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
             }
         }
     };
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem Item){
+        final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        String st=Item.getTitle().toString();
+        if(st.equals("family tasks")){
+            Intent go = new Intent(this, Matalot.class);
+            go.putExtra("a",settings.getString("currentFamily",""));
+            startActivity(go);
+        }
+        if (st.equals("your family")){
+            Intent go = new Intent(this, Reshimot.class);
+            go.putExtra("a",settings.getString("currentFamily",""));
+            startActivity(go);
+        }
+        if (st.equals("log out")){
+            SharedPreferences.Editor editor=settings.edit();
+            editor.putBoolean("haveFamily",false);
+            editor.putBoolean("stayConnect",false);
+            editor.commit();
+            Intent go = new Intent(this, Connect.class);
+            startActivity(go);
+        }
+        if (st.equals("leave family")){
+            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
+            ValueEventListener leaveFamily=new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Family family=data.getValue(Family.class);
+                        ArrayList<User> UserValue2 = family.getUsers();
+                        ArrayList<User> usersHelper = new ArrayList<>();
+                        User user = null;
+                        while (!UserValue2.isEmpty()) {
+                            user = UserValue2.remove(0);
+                            if (!user.getUid().equals(settings.getString("currentUser",""))) {
+                                usersHelper.add(user);
+                            }
+                        }
+                        family.setUsers(usersHelper);
+                        refFamily.child(familyName).setValue(family);
+                        SharedPreferences.Editor editor=settings.edit();
+                        editor.putBoolean("haveFamily",false);
+                        editor.putString("currentFamily","");
+                        editor.commit();
+                        returnToFamily(user);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        if(st.equals("change family")){
+            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
+            ValueEventListener leaveFamily=new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Family family=data.getValue(Family.class);
+                        User user = null;
+                        while (!family.getUsers().isEmpty()) {
+                            user = (User) family.getUsers().remove(0);
+                            if (user.getUid().equals(settings.getString("currentUser",""))) {
+                                returnToFamily(user);
+                            }
+                        }
+
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        return true;
+    }
+    public void returnToFamily(User user1){
+        Intent getUser = new Intent(this, YourFamily.class);
+        getUser.putExtra("a", user1.getUid());
+        getUser.putExtra("b", user1.getName());
+        getUser.putExtra("c", user1.getPassword());
+        getUser.putExtra("d", user1.getEmail());
+        startActivity(getUser);
+    }
 }
