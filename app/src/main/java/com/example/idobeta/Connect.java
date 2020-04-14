@@ -91,6 +91,10 @@ public class Connect extends AppCompatActivity {
                                 String Uname = name.getText().toString();
                                 User userDB = new User(uid, Uname, password, email1, false, false, "");
                                 refUsers.child(uid).setValue(userDB);
+                                SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+                                SharedPreferences.Editor editor=settings.edit();
+                                editor.putString("currentUser",userDB.getUid());
+                                editor.commit();
                                 user1 = userDB;
                             } else {
                                 Log.w("Connect", "createUserWithEmail:failure", task.getException());

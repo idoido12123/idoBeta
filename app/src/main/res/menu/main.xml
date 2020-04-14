@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menuLists"
+        android:title="family lists"
+        android:orderInCategory="100"/>
+
+    <item
+        android:id="@+id/menuTasks"
+        android:title="family tasks"
+        android:orderInCategory="200"/>
+    <item
+        android:id="@+id/leaveFamily"
+        android:title="leave family"
+        android:orderInCategory="300"/>
+    <item
+        android:id="@+id/yourFamilies"
+        android:title="change family"
+        android:orderInCategory="400"/>
+    <item
+        android:id="@+id/logOut"
+        android:title="log out"
+        android:orderInCategory="500"/>
+
+</menu>

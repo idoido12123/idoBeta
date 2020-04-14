@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -279,5 +282,72 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         };
         query.addListenerForSingleValueEvent(removeValue);
         return true;
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem Item){
+        final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        String st=Item.getTitle().toString();
+        if(st.equals("family tasks")){
+            Intent go = new Intent(this, Matalot.class);
+            go.putExtra("a",settings.getString("currentFamily",""));
+            startActivity(go);
+        }
+        if (st.equals("family lists")){
+            Intent go = new Intent(this, Reshimot.class);
+            go.putExtra("a",settings.getString("currentFamily",""));
+            startActivity(go);
+        }
+        if (st.equals("log out")){
+            SharedPreferences.Editor editor=settings.edit();
+            editor.putBoolean("haveFamily",false);
+            editor.putBoolean("stayConnect",false);
+            Intent go = new Intent(this, Connect.class);
+            startActivity(go);
+        }
+        if (st.equals("leave family")){
+            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
+            ValueEventListener leaveFamily=new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Family family=data.getValue(Family.class);
+                        ArrayList<User> UserValue2 = family.getUsers();
+                        ArrayList<User> usersHelper = new ArrayList<>();
+                        User user = null;
+                        while (!UserValue2.isEmpty()) {
+                            user = UserValue2.remove(0);
+                            if (!user.getUid().equals(settings.getString("currentUser",""))) {
+                                usersHelper.add(user);
+                            }
+                        }
+                        family.setUsers(usersHelper);
+                        refFamily.child(familyUname2).setValue(family);
+                        SharedPreferences.Editor editor=settings.edit();
+                        editor.putBoolean("haveFamily",false);
+                        editor.putString("currentFamily","");
+                        editor.commit();
+                        returnToFamily(user);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        return true;
+    }
+    public void returnToFamily(User user1){
+        Intent getUser = new Intent(this, YourFamily.class);
+        getUser.putExtra("a", user1.getUid());
+        getUser.putExtra("b", user1.getName());
+        getUser.putExtra("c", user1.getPassword());
+        getUser.putExtra("d", user1.getEmail());
+        startActivity(getUser);
     }
 }

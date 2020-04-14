@@ -9,8 +9,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,17 +38,14 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     EditText Nreshima;
     EditText ListDate;
     EditText ListTime;
-    Date date = new Date();
     Button NewList;
     ListView BigList;
+    ListView connectedFamilies;
     Intent t4;
-    NewList reshima1;
     String familyName1;
     ArrayList<String> ShopList = new ArrayList<>();
     ArrayList<NewList> ShopValues = new ArrayList<>();
-    boolean flag = false;
     String listNhelper;
-    Button logOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,6 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         setContentView(R.layout.activity_reshimot);
         NewList = (Button) findViewById(R.id.NewList);
         BigList = (ListView) findViewById(R.id.ListOfLists);
-        logOut=(Button)findViewById(R.id.logOut);
         t4 = getIntent();
         familyName1 = t4.getExtras().getString("a");
         Query query = refFamily.orderByChild("familyUname").equalTo(familyName1);
@@ -134,13 +133,6 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         chosenList.putExtra("b", familyName1);
         startActivity(chosenList);
     }
-
-    public void click6(View view) {
-        Intent t5 = new Intent(this, Matalot.class);
-        t5.putExtra("a", familyName1);
-        startActivity(t5);
-    }
-
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         listNhelper = (String) BigList.getItemAtPosition(i);
@@ -174,13 +166,95 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             Log.w("YourFamily", "Failed to read value.", databaseError.toException());
         }
     };
-    public void logOut(View view){
-        SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-        SharedPreferences.Editor editor=settings.edit();
-        editor.putBoolean("haveFamily",false);
-        editor.putBoolean("stayConnect",false);
-        editor.commit();
-        Intent returnToConnect=new Intent(this,Connect.class);
-        startActivity(returnToConnect);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem Item){
+        final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        String st=Item.getTitle().toString();
+        if(st.equals("family tasks")){
+            Intent go = new Intent(this, Matalot.class);
+            go.putExtra("a",settings.getString("currentFamily",""));
+            startActivity(go);
+        }
+        if (st.equals("your family")){
+           Intent go = new Intent(this, Reshimot.class);
+           go.putExtra("a",settings.getString("currentFamily",""));
+           startActivity(go);
+        }
+        if (st.equals("log out")){
+            SharedPreferences.Editor editor=settings.edit();
+            editor.putBoolean("haveFamily",false);
+            editor.putBoolean("stayConnect",false);
+            editor.commit();
+            Intent go = new Intent(this, Connect.class);
+            startActivity(go);
+        }
+        if (st.equals("leave family")){
+            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
+            ValueEventListener leaveFamily=new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Family family=data.getValue(Family.class);
+                        ArrayList<User> UserValue2 = family.getUsers();
+                        ArrayList<User> usersHelper = new ArrayList<>();
+                        User user = null;
+                        while (!UserValue2.isEmpty()) {
+                            user = UserValue2.remove(0);
+                            if (!user.getUid().equals(settings.getString("currentUser",""))) {
+                                usersHelper.add(user);
+                            }
+                        }
+                        family.setUsers(usersHelper);
+                        refFamily.child(familyName1).setValue(family);
+                        SharedPreferences.Editor editor=settings.edit();
+                        editor.putBoolean("haveFamily",false);
+                        editor.putString("currentFamily","");
+                        editor.commit();
+                        returnToFamily(user);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        if(st.equals("change family")){
+            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
+            ValueEventListener leaveFamily=new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Family family=data.getValue(Family.class);
+                        User user = null;
+                        while (!family.getUsers().isEmpty()) {
+                            user = (User) family.getUsers().remove(0);
+                            if (user.getUid().equals(settings.getString("currentUser",""))) {
+                                returnToFamily(user);
+                            }
+                        }
+
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        return true;
+    }
+    public void returnToFamily(User user1){
+        Intent getUser = new Intent(this, YourFamily.class);
+        getUser.putExtra("a", user1.getUid());
+        getUser.putExtra("b", user1.getName());
+        getUser.putExtra("c", user1.getPassword());
+        getUser.putExtra("d", user1.getEmail());
+        startActivity(getUser);
     }
 }
