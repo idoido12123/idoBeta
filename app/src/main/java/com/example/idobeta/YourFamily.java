@@ -66,8 +66,9 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         switch2 = (Switch) findViewById(R.id.switch2);
         tv1 = (TextView) findViewById(R.id.tv1);
         signIn = (Button) findViewById(R.id.signIn);
-        listV.setVisibility(View.INVISIBLE);
-        tv1.setVisibility(View.INVISIBLE);
+        UFname.setVisibility(View.INVISIBLE);
+        lastName.setVisibility(View.INVISIBLE);
+        signIn.setVisibility(View.INVISIBLE);
         ValueEventListener FamilyListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot ds) {
@@ -103,20 +104,20 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
 
 
     public void onSwitch2(View view) {
-        if (switch2.isChecked()) {
+        if (!switch2.isChecked()) {
             listV.setVisibility(View.VISIBLE);
             tv1.setVisibility(View.VISIBLE);
             lastName.setVisibility(View.INVISIBLE);
             signIn.setVisibility(View.INVISIBLE);
             UFname.setVisibility(View.INVISIBLE);
-            switch2.setText("click off if you want to create new family");
+            switch2.setText("click on if you want to create new family");
         } else {
             lastName.setVisibility(View.VISIBLE);
             signIn.setVisibility(View.VISIBLE);
             UFname.setVisibility(View.VISIBLE);
             tv1.setVisibility(View.INVISIBLE);
             listV.setVisibility(View.INVISIBLE);
-            switch2.setText("click on if your family sign in");
+            switch2.setText("click off if your family sign in");
         }
     }
 

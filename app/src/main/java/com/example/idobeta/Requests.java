@@ -44,7 +44,9 @@ public class Requests extends AppCompatActivity implements AdapterView.OnItemCli
                     requestsValues = family.getRequests();
                     while (!requestsValues.isEmpty()) {
                         User user = requestsValues.remove(0);
-                        requestsList.add(user.getName());
+                        if(!user.getName().equals("")) {
+                            requestsList.add(user.getName());
+                        }
                     }
                 }
                 ArrayAdapter<String> adp;

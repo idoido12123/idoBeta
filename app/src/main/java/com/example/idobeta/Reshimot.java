@@ -66,7 +66,9 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
                     ShopValues = family.getLists();
                     while (!ShopValues.isEmpty()) {
                         NewList list = ShopValues.remove(0);
-                        ShopList.add(list.getListName());
+                        if(!list.getListName().equals("")) {
+                            ShopList.add(list.getListName());
+                        }
                     }
                 }
                 ArrayAdapter<String> adp = new ArrayAdapter<String>(Reshimot.this, R.layout.support_simple_spinner_dropdown_item, ShopList);

@@ -50,14 +50,12 @@ public class Connect extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
-        checkBox = (CheckBox) findViewById(R.id.checkBox1);
         name = (EditText) findViewById(R.id.name);
         pass = (EditText) findViewById(R.id.pass);
         email = (EditText) findViewById(R.id.email);
         switch1 = (Switch) findViewById(R.id.switch1);
         finish1 = (Button) findViewById(R.id.finish);
         tvtitle = (TextView) findViewById(R.id.textV);
-        checkBox = (CheckBox) findViewById(R.id.checkBox1);
         mAuth1 = FirebaseAuth.getInstance();
     }
 

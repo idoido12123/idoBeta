@@ -75,7 +75,9 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                     TaskValues = family.getTasks();
                     while (!TaskValues.isEmpty()) {
                         Task task1 = TaskValues.remove(0);
-                        TaskList.add(task1.getTeur());
+                        if(!task1.getTeur().equals("")) {
+                            TaskList.add(task1.getTeur());
+                        }
                     }
                 }
 
@@ -339,6 +341,34 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                 }
             };
             query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        if(st.equals("change family")){
+            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
+            ValueEventListener leaveFamily=new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Family family=data.getValue(Family.class);
+                        User user = null;
+                        while (!family.getUsers().isEmpty()) {
+                            user = (User) family.getUsers().remove(0);
+                            if (user.getUid().equals(settings.getString("currentUser",""))) {
+                                returnToFamily(user);
+                            }
+                        }
+
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            query.addListenerForSingleValueEvent(leaveFamily);
+        }
+        if(st.equals("new requests")){
+            Intent go=new Intent(this,Requests.class);
+            go.putExtra("a",familyUname2);
+            startActivity(go);
         }
         return true;
     }
