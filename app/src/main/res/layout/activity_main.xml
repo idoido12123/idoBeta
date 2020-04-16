@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="top"
     android:orientation="vertical"
+    android:background="@drawable/ido6"
     tools:context=".MainActivity">
 
 </LinearLayout>

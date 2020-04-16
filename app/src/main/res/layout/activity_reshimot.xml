@@ -32,7 +32,7 @@
         android:layout_weight="1"
         android:text="add new list"
         android:textSize="15dp"
-        android:background="@drawable/button_list"
+        android:background="@drawable/task_btn"
         android:textStyle="bold"
         android:onClick="newList"/>
 
