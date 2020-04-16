@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".Connect"
     android:orientation="vertical"
-    android:gravity="top">
+    android:gravity="top"
+    android:background="@drawable/ido6">
 
     <TextView
         android:id="@+id/textV"
@@ -14,8 +15,9 @@
         android:layout_weight="1"
         android:textSize="30dp"
         android:text="Register"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:gravity="center"
-        android:textStyle="italic"/>
+        android:textStyle="bold"/>
 
     <Switch
         android:id="@+id/switch1"
@@ -24,12 +26,12 @@
         android:layout_weight="1"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:text="already have an account? click off and log in!"
+        android:text="already have an account? click on and log in!"
         android:onClick="OnSwitch" />
 
     <EditText
         android:id="@+id/name"
-        android:layout_width="280dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:ems="20"
@@ -38,7 +40,7 @@
 
     <EditText
         android:id="@+id/email"
-        android:layout_width="282dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:ems="20"
@@ -47,7 +49,7 @@
 
     <EditText
         android:id="@+id/pass"
-        android:layout_width="282dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:ems="10"
@@ -62,8 +64,9 @@
         android:layout_weight="1"
         android:onClick="click"
         android:text="join us!"
+        android:background="@drawable/custum"
         android:textSize="20dp"
-        android:textStyle="italic"/>
+        android:textStyle="bold"/>
 
     <Space
         android:layout_width="match_parent"

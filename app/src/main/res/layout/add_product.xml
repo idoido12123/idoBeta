@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:inputType="textPersonName"
-        android:hint="enter your name"
+        android:hint="enter your name (not required)"
         android:textSize="20dp"
         android:textStyle="italic"/>
 
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:hint="product amount"
+        android:hint="product amount (not required)"
         android:textStyle="italic"
         android:textSize="20dp"
         android:inputType="number" />

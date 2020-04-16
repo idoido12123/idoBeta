@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="400dp"
     android:orientation="vertical"
     android:gravity="top">
 
@@ -10,25 +10,28 @@
         android:id="@+id/Nreshima"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="0.5"
         android:inputType="textPersonName"
-        android:hint="new list's name" />
+        android:gravity="bottom"
+        android:hint="New list name" />
 
     <EditText
         android:id="@+id/ListDate"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="0.5"
         android:inputType="date"
-        android:hint="enter today's date"/>
+        android:gravity="bottom"
+        android:hint="List usage Date (not required)"/>
 
     <EditText
         android:id="@+id/ListTime"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="0.5"
         android:inputType="time"
-        android:hint="what's the time?"/>
+        android:gravity="bottom"
+        android:hint="List usage time (not required)"/>
 
 
 </LinearLayout>

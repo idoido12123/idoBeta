@@ -3,7 +3,7 @@
     <item
         android:id="@+id/menuLists"
         android:title="family lists"
-        android:orderInCategory="100"/>
+        android:orderInCategory="100" />
 
     <item
         android:id="@+id/menuTasks"
@@ -12,15 +12,15 @@
     <item
         android:id="@+id/leaveFamily"
         android:title="leave family"
-        android:orderInCategory="300"/>
+        android:orderInCategory="500"/>
     <item
         android:id="@+id/yourFamilies"
         android:title="change family"
-        android:orderInCategory="400"/>
+        android:orderInCategory="300"/>
     <item
         android:id="@+id/requests"
         android:title="new requests"
-        android:orderInCategory="500"/>
+        android:orderInCategory="400"/>
     <item
         android:id="@+id/logOut"
         android:title="log out"

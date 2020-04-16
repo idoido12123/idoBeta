@@ -38,6 +38,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
     EditText UFname;
     ListView listV;
     TextView tv1;
+    TextView title;
     ArrayList<Family> FamilyValues = new ArrayList<Family>();
     ArrayList<String> FamilyList = new ArrayList<String>();
     Button signIn;
@@ -69,6 +70,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         UFname.setVisibility(View.INVISIBLE);
         lastName.setVisibility(View.INVISIBLE);
         signIn.setVisibility(View.INVISIBLE);
+        title=(TextView)findViewById(R.id.textView2);
         ValueEventListener FamilyListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot ds) {
@@ -110,14 +112,16 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             lastName.setVisibility(View.INVISIBLE);
             signIn.setVisibility(View.INVISIBLE);
             UFname.setVisibility(View.INVISIBLE);
-            switch2.setText("click on if you want to create new family");
+            title.setText("choose family");
+            switch2.setText("want to create new family? click on!");
         } else {
             lastName.setVisibility(View.VISIBLE);
             signIn.setVisibility(View.VISIBLE);
             UFname.setVisibility(View.VISIBLE);
             tv1.setVisibility(View.INVISIBLE);
             listV.setVisibility(View.INVISIBLE);
-            switch2.setText("click off if your family sign in");
+            title.setText("create family");
+            switch2.setText("Your family already signed up? click off and join them!");
         }
     }
 
@@ -216,6 +220,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             if (flag2 == false) {
                 family1.addRequest(user);
                 refFamily.child((String) listV.getItemAtPosition(position)).setValue(family1);
+                Toast.makeText(YourFamily.this, "your request sent!", Toast.LENGTH_SHORT).show();
             }
             else {
                 Toast.makeText(YourFamily.this, "you are member in this family", Toast.LENGTH_SHORT).show();

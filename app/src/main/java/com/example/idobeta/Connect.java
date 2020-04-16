@@ -61,21 +61,21 @@ public class Connect extends AppCompatActivity {
 
     public void OnSwitch(View view) {
         if (switch1.isChecked()) {
-            switch1.setText("click off if you want to sigh up");
+            switch1.setText("don't have an account? click off and join us!");
             tvtitle.setText("Login");
             name.setVisibility(View.INVISIBLE);
-            finish1.setText("Login");
+            finish1.setText("Login!");
         } else {
-            switch1.setText("click on if you want to log in");
+            switch1.setText("already have an account? click on and log in!");
             tvtitle.setText("Register");
             name.setVisibility(View.VISIBLE);
-            finish1.setText("Register");
+            finish1.setText("join us!");
         }
 
     }
 
     public void click(View view) {
-        if (finish1.getText().equals("Register")) {
+        if (finish1.getText().equals("join us!")) {
             email1 = email.getText().toString();
             password = pass.getText().toString();
             mAuth1.createUserWithEmailAndPassword(email1, password)
@@ -93,10 +93,11 @@ public class Connect extends AppCompatActivity {
                                 SharedPreferences.Editor editor=settings.edit();
                                 editor.putString("currentUser",userDB.getUid());
                                 editor.commit();
+                                Toast.makeText(Connect.this, "thank you for joining us!", Toast.LENGTH_LONG).show();
                                 user1 = userDB;
                             } else {
                                 Log.w("Connect", "createUserWithEmail:failure", task.getException());
-                                Toast.makeText((Connect.this), "Authentication failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText((Connect.this), "this email already exist", Toast.LENGTH_SHORT).show();
 
                             }
                         }

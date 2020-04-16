@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".YourFamily"
     android:orientation="vertical"
-    android:gravity="top">
+    android:gravity="top"
+    android:background="@drawable/ido6">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="choose family"
+        android:gravity="center"
+        android:textSize="27dp"
+        android:textStyle="bold"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"/>
 
     <Switch
         android:id="@+id/switch2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:text="click on if you want to create new family"
-        android:textSize="20dp"
+        android:text=" want to create new family? click on!"
+        android:textSize="17dp"
         android:textStyle="bold"
         android:onClick="onSwitch2"/>
 
@@ -22,53 +33,48 @@
         android:id="@+id/lastName"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
+        android:hint="enter family last name "
         android:inputType="textPersonName"
-        android:hint="enter family last name"
-        android:textSize="22dp"
-        android:textStyle="italic"/>
+        android:textSize="18dp"
+        android:textStyle="italic" />
 
     <EditText
         android:id="@+id/UName"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
+        android:hint="enter family user name "
         android:inputType="textPersonName"
-        android:hint="enter family user name"
-        android:textSize="22dp"
+        android:textSize="18dp"
         android:textStyle="italic"/>
 
     <Button
         android:id="@+id/signIn"
-        android:layout_width="208dp"
-        android:layout_height="wrap_content"
+        android:layout_width="179dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/custum"
+        android:onClick="click4"
         android:text="sign in"
-        android:textSize="22dp"
-        android:textStyle="italic"
-        android:onClick="click4"/>
+        android:textSize="17dp"
+        android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/ln2"
+    <TextView
+        android:id="@+id/tv1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:text="Choose your own family"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        android:gravity="center"/>
 
-        <TextView
-            android:id="@+id/tv1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="Choose your own family"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"/>
-
-        <ListView
-            android:id="@+id/listV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2" />
-    </LinearLayout>
+    <ListView
+        android:id="@+id/listV"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6" />
 
 </LinearLayout>

@@ -6,13 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".Reshimot"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@drawable/lists2">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="2"
         android:textSize="25dp"
         android:gravity="center"
         android:text="TextView"
@@ -31,7 +32,8 @@
         android:layout_weight="1"
         android:text="add new list"
         android:textSize="15dp"
-        android:textStyle="italic"
+        android:background="@drawable/button_list"
+        android:textStyle="bold"
         android:onClick="newList"/>
 
     <Space

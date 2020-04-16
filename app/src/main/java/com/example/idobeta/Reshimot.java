@@ -52,7 +52,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         BigList = (ListView) findViewById(R.id.ListOfLists);
         title=(TextView)findViewById(R.id.textView) ;
         SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-        title.setText("welcome to family "+settings.getString("currentFamily",""));
+        title.setText("welcome to the amazing "+settings.getString("currentFamily","")+" family!");
         t4 = getIntent();
         familyName1 = t4.getExtras().getString("a");
         Query query = refFamily.orderByChild("familyUname").equalTo(familyName1);
@@ -182,7 +182,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             go.putExtra("a",settings.getString("currentFamily",""));
             startActivity(go);
         }
-        if (st.equals("your family")){
+        if (st.equals("family lists")){
            Intent go = new Intent(this, Reshimot.class);
            go.putExtra("a",settings.getString("currentFamily",""));
            startActivity(go);
