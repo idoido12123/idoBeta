@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -246,5 +248,30 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             t3.putExtra("a",(String) family.getFamilyUname());
             startActivity(t3);
         }
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.yourFamilies).setVisible(false);
+        menu.findItem(R.id.leaveFamily).setVisible(false);
+        menu.findItem(R.id.logOut).setVisible(false);
+        menu.findItem(R.id.requests).setVisible(false);
+        menu.findItem(R.id.menuTasks).setVisible(false);
+        menu.findItem(R.id.menuLists).setTitle("return to current family lists");
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem Item) {
+        final SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        String st = Item.getTitle().toString();
+        if(!settings.getString("currentFamily","").equals("")) {
+            if (st.equals("return to current family lists")) {
+                Intent go = new Intent(this, Reshimot.class);
+                go.putExtra("a", settings.getString("currentFamily", ""));
+                startActivity(go);
+            }
+        }
+        else {
+            Toast.makeText(this, "you don't have family", Toast.LENGTH_SHORT).show();
+        }
+        return true;
     }
 }

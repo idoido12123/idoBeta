@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
@@ -200,26 +201,36 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             ValueEventListener leaveFamily=new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data:dataSnapshot.getChildren()){
-                        Family family=data.getValue(Family.class);
-                        ArrayList<User> UserValue2 = family.getUsers();
-                        ArrayList<User> usersHelper = new ArrayList<>();
-                        User user = null;
-                        while (!UserValue2.isEmpty()) {
-                            user = UserValue2.remove(0);
-                            if (!user.getUid().equals(settings.getString("currentUser",""))) {
-                                usersHelper.add(user);
+                    for(DataSnapshot data:dataSnapshot.getChildren()) {
+                        Family family = data.getValue(Family.class);
+                            ArrayList<User> UserValue2 = family.getUsers();
+                            ArrayList<User> usersHelper = new ArrayList<>();
+                            User user = null;
+                            while (!UserValue2.isEmpty()) {
+                                user = UserValue2.remove(0);
+                                if (!user.getUid().equals(settings.getString("currentUser", ""))) {
+                                    usersHelper.add(user);
+                                }
+                            }
+                            family.setUsers(usersHelper);
+                            if (family.getUsers().isEmpty()) {
+                                refFamily.child(familyName1).removeValue();
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putBoolean("haveFamily", false);
+                                editor.putString("currentFamily", "");
+                                editor.commit();
+                                returnToFamily(user);
+                            }
+                            else {
+                                refFamily.child(familyName1).setValue(family);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putBoolean("haveFamily", false);
+                                editor.putString("currentFamily", "");
+                                editor.commit();
+                                returnToFamily(user);
                             }
                         }
-                        family.setUsers(usersHelper);
-                        refFamily.child(familyName1).setValue(family);
-                        SharedPreferences.Editor editor=settings.edit();
-                        editor.putBoolean("haveFamily",false);
-                        editor.putString("currentFamily","");
-                        editor.commit();
-                        returnToFamily(user);
                     }
-                }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
