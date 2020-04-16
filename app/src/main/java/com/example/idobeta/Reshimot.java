@@ -215,20 +215,15 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
                             family.setUsers(usersHelper);
                             if (family.getUsers().isEmpty()) {
                                 refFamily.child(familyName1).removeValue();
-                                SharedPreferences.Editor editor = settings.edit();
-                                editor.putBoolean("haveFamily", false);
-                                editor.putString("currentFamily", "");
-                                editor.commit();
-                                returnToFamily(user);
                             }
                             else {
                                 refFamily.child(familyName1).setValue(family);
-                                SharedPreferences.Editor editor = settings.edit();
-                                editor.putBoolean("haveFamily", false);
-                                editor.putString("currentFamily", "");
-                                editor.commit();
-                                returnToFamily(user);
                             }
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putBoolean("haveFamily", false);
+                        editor.putString("currentFamily", "");
+                        editor.commit();
+                        returnToFamily(user);
                         }
                     }
                 @Override

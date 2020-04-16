@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +39,8 @@ import static com.example.idobeta.FBref.refShopLists;
 public class ChosenList extends AppCompatActivity implements AdapterView.OnItemLongClickListener,AdapterView.OnItemClickListener {
     AlertDialog.Builder addProduct1;
     AlertDialog.Builder changeAmount;
+    AlertDialog.Builder editList1;
+    LinearLayout editListDialog;
     LinearLayout productDialog;
     LinearLayout changeAmountDialog;
     Button addProduct;
@@ -52,11 +55,14 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
     EditText productAmount;
     EditText orderName;
     EditText newAmount;
+    EditText editListName;
     String date="";
     ArrayList<NewList>shopValues=new ArrayList<>();
     ArrayList<NewList>listsHelper=new ArrayList<>();
     ArrayList<Product>productsHelper=new ArrayList<>();
+    Button editList;
     int position;
+    boolean flag=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,7 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         addProduct = (Button) findViewById(R.id.addProduct);
         products = (ListView) findViewById(R.id.products);
         title = (TextView) findViewById(R.id.title);
+        editList=(Button)findViewById(R.id.editList);
         getList1 = getIntent();
         lName = getList1.getExtras().getString("a");
         familyName=getList1.getExtras().getString("b");
@@ -256,8 +263,78 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
             }
         }
     };
+    public void removeProducts(View view){
+        editListDialog = (LinearLayout) getLayoutInflater().inflate(R.layout.edit_list, null);
+        editListName = (EditText) editListDialog.findViewById(R.id.editName);
+        addProduct1 = new AlertDialog.Builder(this);
+        addProduct1.setView(editListDialog);
+        addProduct1.setTitle("remove list");
+        addProduct1.setPositiveButton("OK", OKclick3);
+        addProduct1.show();
+    }
+    DialogInterface.OnClickListener OKclick3 = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if (i == DialogInterface.BUTTON_POSITIVE) {
+                final String NLname = editListName.getText().toString();
+                Query query = refFamily.orderByChild("familyUname").equalTo(familyName);
+                ValueEventListener removeList = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        shopValues.clear();
+                        productsValues.clear();
+                        listsHelper.clear();
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            Family family = data.getValue(Family.class);
+                            shopValues = family.getLists();
+                            ArrayList<NewList> listsHelper2 = new ArrayList<>();
+                            while (!shopValues.isEmpty()) {
+                                NewList list = shopValues.remove(0);
+                                if (list.getListName().equals(lName)) {
+                                    Product product = list.getProducts().remove(0);
+                                    while (!list.getProducts().isEmpty()) {
+                                        productsValues.add(list.getProducts().remove(0));
+                                    }
+                                    list.addProduct(product);
+                                }
+                                listsHelper2.add(list);
+                            }
+                            while (!listsHelper2.isEmpty()) {
+                                NewList list = listsHelper2.remove(0);
+                                if (list.getListName().equals(NLname)) {
+                                    flag = true;
+                                    while (!productsValues.isEmpty()) {
+                                        list.getProducts().add(productsValues.remove(0));
+                                    }
+                                }
+                                listsHelper.add(list);
+                            }
+                            if (flag) {
+                                family.setLists(listsHelper);
+                                refFamily.child(familyName).setValue(family);
+                                flag=false;
+                            }
+                            else {
+                                Toast.makeText(ChosenList.this, "list don't exist", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                };
+                query.addListenerForSingleValueEvent(removeList);
+            }
+        }
+    };
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.yourFamilies).setVisible(false);
+        menu.findItem(R.id.leaveFamily).setVisible(false);
+        menu.findItem(R.id.logOut).setVisible(false);
+        menu.findItem(R.id.requests).setVisible(false);
         return true;
     }
 
@@ -270,81 +347,11 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
             go.putExtra("a",settings.getString("currentFamily",""));
             startActivity(go);
         }
-        if (st.equals("your family")){
+        if (st.equals("family lists")){
             Intent go = new Intent(this, Reshimot.class);
             go.putExtra("a",settings.getString("currentFamily",""));
             startActivity(go);
         }
-        if (st.equals("log out")){
-            SharedPreferences.Editor editor=settings.edit();
-            editor.putBoolean("haveFamily",false);
-            editor.putBoolean("stayConnect",false);
-            editor.commit();
-            Intent go = new Intent(this, Connect.class);
-            startActivity(go);
-        }
-        if (st.equals("leave family")){
-            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
-            ValueEventListener leaveFamily=new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data:dataSnapshot.getChildren()){
-                        Family family=data.getValue(Family.class);
-                        ArrayList<User> UserValue2 = family.getUsers();
-                        ArrayList<User> usersHelper = new ArrayList<>();
-                        User user = null;
-                        while (!UserValue2.isEmpty()) {
-                            user = UserValue2.remove(0);
-                            if (!user.getUid().equals(settings.getString("currentUser",""))) {
-                                usersHelper.add(user);
-                            }
-                        }
-                        family.setUsers(usersHelper);
-                        refFamily.child(familyName).setValue(family);
-                        SharedPreferences.Editor editor=settings.edit();
-                        editor.putBoolean("haveFamily",false);
-                        editor.putString("currentFamily","");
-                        editor.commit();
-                        returnToFamily(user);
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            };
-            query.addListenerForSingleValueEvent(leaveFamily);
-        }
-        if(st.equals("change family")){
-            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
-            ValueEventListener leaveFamily=new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data:dataSnapshot.getChildren()){
-                        Family family=data.getValue(Family.class);
-                        User user = null;
-                        while (!family.getUsers().isEmpty()) {
-                            user = (User) family.getUsers().remove(0);
-                            if (user.getUid().equals(settings.getString("currentUser",""))) {
-                                returnToFamily(user);
-                            }
-                        }
-
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            };
-            query.addListenerForSingleValueEvent(leaveFamily);
-        }
         return true;
-    }
-    public void returnToFamily(User user1){
-        Intent getUser = new Intent(this, YourFamily.class);
-        getUser.putExtra("a", user1.getUid());
-        getUser.putExtra("b", user1.getName());
-        getUser.putExtra("c", user1.getPassword());
-        getUser.putExtra("d", user1.getEmail());
-        startActivity(getUser);
     }
 }

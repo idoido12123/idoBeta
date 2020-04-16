@@ -328,10 +328,15 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                             }
                         }
                         family.setUsers(usersHelper);
-                        refFamily.child(familyUname2).setValue(family);
-                        SharedPreferences.Editor editor=settings.edit();
-                        editor.putBoolean("haveFamily",false);
-                        editor.putString("currentFamily","");
+                        if (family.getUsers().isEmpty()) {
+                            refFamily.child(familyUname2).removeValue();
+                        }
+                        else {
+                            refFamily.child(familyUname2).setValue(family);
+                        }
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putBoolean("haveFamily", false);
+                        editor.putString("currentFamily", "");
                         editor.commit();
                         returnToFamily(user);
                     }
