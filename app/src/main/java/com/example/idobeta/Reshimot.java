@@ -111,7 +111,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
                     public void onDataChange(@NonNull DataSnapshot ds) {
                         for (DataSnapshot data : ds.getChildren()) {
                             Family family = data.getValue(Family.class);
-                            NewList list = new NewList(Lname, Ldatime, true);
+                            NewList list = new NewList(Lname, Ldatime);
                             Product product = new Product("", "", "");
                             list.addProduct(product);
                             family.addList(list);

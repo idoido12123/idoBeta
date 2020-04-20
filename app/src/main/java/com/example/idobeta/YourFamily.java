@@ -147,7 +147,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                     family = new Family(lastName.getText().toString(), str);
                     family.addUser(user);
                     Task task = new Task("", "", "", "", true);
-                    NewList list = new NewList("", "", false);
+                    NewList list = new NewList("", "");
                     User request=new User("","","","");
                     family.addTask(task);
                     family.addList(list);

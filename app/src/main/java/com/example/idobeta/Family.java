@@ -11,66 +11,151 @@ public class Family {
         ArrayList<User> requests;
 
         public Family(){}
-        public Family(String lastName,String FamilyUname){
-            this.lastName=lastName;
-            this.familyUname=FamilyUname;
-            this.users=new ArrayList<>();
-            this.tasks=new ArrayList<>();
-            this.lists=new ArrayList<>();
-            this.requests=new ArrayList<>();
-        }
+    /**
+     * class Family builder.
+     * <p>
+     * @param lastName,FamilyUname
+     */
+    public Family(String lastName,String FamilyUname){
+        this.lastName=lastName;
+        this.familyUname=FamilyUname;
+        this.users=new ArrayList<>();
+        this.tasks=new ArrayList<>();
+        this.lists=new ArrayList<>();
+        this.requests=new ArrayList<>();
+    }
+    /**
+     * getLastName.
+     * return family's last name
+     * <p>
+     * @return lastName.
+     */
         public String getLastName(){
             return this.lastName;
         }
-
-        public String getFamilyUname(){
+    /**
+     * getFamilyUname.
+     * return family's user name.
+     * <p>
+     * @return familyUname.
+     */
+    public String getFamilyUname(){
             return this.familyUname;
         }
-        public ArrayList getUsers(){
+    /**
+     * getUsers.
+     * return family's members
+     * <p>
+     * @return users.
+     */
+    public ArrayList getUsers(){
             return this.users;
         }
-
-        public ArrayList<Task> getTasks() {
+    /**
+     * getTasks.
+     *return family's tasks
+     * <p>
+     * @return tasks.
+     */
+    public ArrayList<Task> getTasks() {
             return this.tasks;
         }
-
-        public ArrayList<NewList> getLists() {
+    /**
+     * getLists.
+     * return family's lists
+     * <p>
+     * @return lists.
+     */
+    public ArrayList<NewList> getLists() {
             return lists;
         }
-
+    /**
+     * getRequests.
+     * return family's requests.
+     * <p>
+     * @return requests.
+     */
     public ArrayList<User> getRequests() {
         return requests;
     }
-
-    void addUser(User user){
+    /**
+     * addUser.
+     * add user to users.
+     * <p>
+     * @param user
+     */
+    public void addUser(User user){
             this.users.add(user);
         }
-        public void setLastName(String lastName){
+    /**
+     * setLastName.
+     * change family's last name.
+     * <p>
+     * @param lastName
+     */
+    public void setLastName(String lastName){
             this.lastName=lastName;
         }
-        public void addTask(Task task){
+    /**
+     * addTask.
+     * add task to tasks.
+     * <p>
+     * @param task
+     */
+    public void addTask(Task task){
             this.tasks.add(task);
         }
-
-        public void addList(NewList list) {
+    /**
+     * addList.
+     * add list to lists.
+     * <p>
+     * @param list
+     */
+    public void addList(NewList list) {
             this.lists.add(list);
         }
-
-        public void setTasks(ArrayList<Task> tasks) {
+    /**
+     * setTasks.
+     * change family's tasks.
+     * <p>
+     * @param tasks
+     */
+    public void setTasks(ArrayList<Task> tasks) {
             this.tasks = tasks;
         }
-
+    /**
+     * setLists.
+     *change family's lists.
+     * <p>
+     * @param lists
+     */
     public void setLists(ArrayList<NewList> lists) {
         this.lists = lists;
     }
-
+    /**
+     * setUsers.
+     * change family's users.
+     * <p>
+     * @param users
+     */
     public void setUsers(ArrayList<User> users) {
         this.users = users;
     }
-
+    /**
+     * setRequests.
+     * change family's requests.
+     * <p>
+     * @param requests
+     */
     public void setRequests(ArrayList<User> requests) {
         this.requests = requests;
     }
+    /**
+     * addRequests.
+     * add request to requests.
+     * <p>
+     * @param user
+     */
     public void addRequest(User user){
             requests.add(user);
     }
