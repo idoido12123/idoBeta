@@ -94,7 +94,7 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         ListTime = (EditText) listDialog.findViewById(R.id.ListTime);
         addList = new AlertDialog.Builder(this);
         addList.setView(listDialog);
-        addList.setTitle("Create new shop list");
+        addList.setTitle("Create new list");
         addList.setPositiveButton("OK", OKclick);
         addList.show();
     }

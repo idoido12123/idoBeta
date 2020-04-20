@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -70,6 +71,7 @@ public class Requests extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+        Toast.makeText(this, "you approve the request", Toast.LENGTH_SHORT).show();
         Query query = refFamily.orderByChild("familyUname").equalTo(familyName);
         ValueEventListener addUser = new ValueEventListener() {
             @Override
@@ -103,6 +105,7 @@ public class Requests extends AppCompatActivity implements AdapterView.OnItemCli
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         final String userHelper= (String) requests.getItemAtPosition(i);
+        Toast.makeText(this, "you ignore the request", Toast.LENGTH_SHORT).show();
         Query query=refFamily.orderByChild("familyUname").equalTo(familyName);
         ValueEventListener ignore=new ValueEventListener() {
             @Override

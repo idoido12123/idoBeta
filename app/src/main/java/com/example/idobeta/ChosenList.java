@@ -300,23 +300,23 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
                                 listsHelper2.add(list);
                             }
                             while (!listsHelper2.isEmpty()) {
-                                NewList list = listsHelper2.remove(0);
-                                if (list.getListName().equals(NLname)) {
+                                NewList list1 = listsHelper2.remove(0);
+                                if (list1.getListName().equals(NLname)) {
                                     flag = true;
                                     while (!productsValues.isEmpty()) {
-                                        list.getProducts().add(productsValues.remove(0));
+                                        list1.getProducts().add(productsValues.remove(0));
                                     }
                                 }
-                                listsHelper.add(list);
+                                listsHelper.add(list1);
                             }
-                            if (flag) {
+                            if (flag==true) {
                                 family.setLists(listsHelper);
                                 refFamily.child(familyName).setValue(family);
-                                flag=false;
                             }
-                            else {
+                            if(flag==false) {
                                 Toast.makeText(ChosenList.this, "list don't exist", Toast.LENGTH_SHORT).show();
                             }
+                            flag=false;
                         }
                     }
 
