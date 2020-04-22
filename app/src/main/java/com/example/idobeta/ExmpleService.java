@@ -40,7 +40,6 @@ public class ExmpleService extends Service {
             final ValueEventListener taskAdd = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    taskValue.clear();
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         family = data.getValue(Family.class);
                         int flag=family.getNotificition();
@@ -49,6 +48,8 @@ public class ExmpleService extends Service {
                             startService1(0);
                         }
                         if(flag==2){
+                            taskValue.clear();
+                            taskValue.add(family.getTasks().remove(0));
                             while (!family.getTasks().isEmpty()){
                                 Task task=family.getTasks().remove(0);
                                     if(task.isCurrentActive()){
@@ -58,6 +59,7 @@ public class ExmpleService extends Service {
                             startService1(2);
                         }
                         if (flag == 1) {
+                            taskValue.clear();
                             taskValue.add(family.getTasks().remove(0));
                             while (!family.getTasks().isEmpty()) {
                                 Task task = family.getTasks().remove(0);
@@ -84,7 +86,7 @@ public class ExmpleService extends Service {
     public void startService1(int i) {
         SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
         family.setNotificition(4);
-        if (i==1) {
+        if (i==1||i==2) {
             family.setTasks(taskValue);
         }
         refFamily.child(settings.getString("currentFamily","")).setValue(family);
