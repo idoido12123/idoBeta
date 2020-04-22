@@ -49,9 +49,12 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reshimot);
+        Intent serviceIntent = new Intent(this, ExmpleService.class);
+        serviceIntent.putExtra("a",0);
+        startService(serviceIntent);
         NewList = (Button) findViewById(R.id.NewList);
         BigList = (ListView) findViewById(R.id.ListOfLists);
-        title=(TextView)findViewById(R.id.textView) ;
+        title=(TextView)findViewById(R.id.textView);
         SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         title.setText("welcome to the amazing "+settings.getString("currentFamily","")+" family!");
         t4 = getIntent();
@@ -233,6 +236,8 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             query.addListenerForSingleValueEvent(leaveFamily);
         }
         if(st.equals("change family")){
+            Intent serviceIntent = new Intent(this,ExmpleService.class);
+            stopService(serviceIntent);
             Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
             ValueEventListener leaveFamily=new ValueEventListener() {
                 @Override

@@ -9,6 +9,7 @@ public class Family {
         ArrayList<Task> tasks;
         ArrayList<NewList> lists;
         ArrayList<User> requests;
+        int notificition;
 
         public Family(){}
     /**
@@ -16,13 +17,14 @@ public class Family {
      * <p>
      * @param lastName,FamilyUname
      */
-    public Family(String lastName,String FamilyUname){
+    public Family(String lastName,String FamilyUname,int notificition){
         this.lastName=lastName;
         this.familyUname=FamilyUname;
         this.users=new ArrayList<>();
         this.tasks=new ArrayList<>();
         this.lists=new ArrayList<>();
         this.requests=new ArrayList<>();
+        this.notificition=notificition;
     }
     /**
      * getLastName.
@@ -158,5 +160,13 @@ public class Family {
      */
     public void addRequest(User user){
             requests.add(user);
+    }
+
+    public int getNotificition() {
+        return notificition;
+    }
+
+    public void setNotificition(int notificition) {
+        this.notificition = notificition;
     }
 }

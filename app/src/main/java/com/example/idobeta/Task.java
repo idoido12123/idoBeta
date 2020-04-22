@@ -6,18 +6,20 @@ public class Task {
     String endDatime;
     String order;
     boolean active;
+    boolean currentActive;
     public Task(){}
     /**
      * class Task builder.
      * <p>
      * @param teur,openDatime,endDatime,order,active
      */
-    public Task(String teur,String openDatime,String endDatime,String order,boolean active){
+    public Task(String teur,String openDatime,String endDatime,String order,boolean active,boolean currentActive){
         this.teur=teur;
         this.openDatime=openDatime;
         this.endDatime=endDatime;
         this.order=order;
         this.active=active;
+        this.currentActive=currentActive;
     }
     /**
      * getTeur.
@@ -108,5 +110,13 @@ public class Task {
      */
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isCurrentActive() {
+        return currentActive;
+    }
+
+    public void setCurrentActive(boolean currentActive) {
+        this.currentActive = currentActive;
     }
 }

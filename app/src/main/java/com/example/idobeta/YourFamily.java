@@ -144,14 +144,15 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                     Toast.makeText(YourFamily.this, "enter another family name", Toast.LENGTH_SHORT).show();
                 }
                 if (flag == false) {
-                    family = new Family(lastName.getText().toString(), str);
+                    family = new Family(lastName.getText().toString(), str,0);
                     family.addUser(user);
-                    Task task = new Task("", "", "", "", true);
+                    Task task = new Task("", "", "", "", true,false);
                     NewList list = new NewList("", "");
                     User request=new User("","","","");
                     family.addTask(task);
                     family.addList(list);
                     family.addRequest(request);
+                    family.setNotificition(0);
                     refFamily.child(family.getFamilyUname()).setValue(family);
                     flag2 = true;
                     moveToReshimot(flag2);

@@ -1,15 +1,19 @@
 package com.example.idobeta;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
+import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +21,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,12 +42,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static com.example.idobeta.App.CHANNEL_ID;
 import static com.example.idobeta.FBref.refFamily;
 import static com.example.idobeta.FBref.refTasks;
 
 public class Matalot extends AppCompatActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
-     final String CHANNEL_ID="new notification";
-     final int NOTIFICATION_ID=001;
+    final String CHANNEL_ID = "new notification";
+    final int NOTIFICATION_ID = 001;
     AlertDialog.Builder addTask;
     AlertDialog.Builder showTask;
     LinearLayout TaskDialog;
@@ -65,15 +71,17 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
     String familyUname2;
     Family family1;
     Family family2;
+    String input;
+    String taskDes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         setContentView(R.layout.activity_matalot);
         NewTask = (Button) findViewById(R.id.newTask);
         tasks = (ListView) findViewById(R.id.tasks);
-        Intent getName = getIntent();
-        familyUname2 = getName.getExtras().getString("a");
+        familyUname2 = settings.getString("currentFamily","");
         Query query = refFamily.orderByChild("familyUname").equalTo(familyUname2);
         ValueEventListener TasksListener = new ValueEventListener() {
             @Override
@@ -85,7 +93,7 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                     TaskValues = family.getTasks();
                     while (!TaskValues.isEmpty()) {
                         Task task1 = TaskValues.remove(0);
-                        if(!task1.getTeur().equals("")) {
+                        if (!task1.getTeur().equals("")) {
                             TaskList.add(task1.getTeur());
                         }
                     }
@@ -107,14 +115,6 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
     }
 
     public void newTask(View view) {
-        createNotificationChannel();
-        NotificationCompat.Builder builder=new NotificationCompat.Builder(this,CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_message);
-        builder.setContentTitle("new task!!");
-        builder.setContentText("you have new task");
-        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify(NOTIFICATION_ID,builder.build());
         TaskDialog = (LinearLayout) getLayoutInflater().inflate(R.layout.new_task, null);
         Ntask = (EditText) TaskDialog.findViewById(R.id.taskDes);
         startDate = (EditText) TaskDialog.findViewById(R.id.startDate);
@@ -128,37 +128,47 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         addTask.setPositiveButton("OK", OKclick);
         addTask.show();
     }
-
-    DialogInterface.OnClickListener OKclick = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            if (i == DialogInterface.BUTTON_POSITIVE) {
-                final String Tdes = Ntask.getText().toString();
-                final String TSdatime = startDate.getText().toString() + " " + startTime.getText().toString();
-                final String TEdatime = endDate.getText().toString() + " " + endTime.getText().toString();
-                final String TOname = Norder.getText().toString();
-                Query query = refFamily.orderByChild("familyUname").equalTo(familyUname2);
-                ValueEventListener addTask = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            Family family = data.getValue(Family.class);
-                            Task task = new Task(Tdes, TSdatime, TEdatime, TOname, true);
-                            family.addTask(task);
-                            refFamily.child(familyUname2).setValue(family);
+        DialogInterface.OnClickListener OKclick = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == DialogInterface.BUTTON_POSITIVE) {
+                    final String Tdes = Ntask.getText().toString();
+                    input = Ntask.getText().toString();
+                    final String TSdatime = startDate.getText().toString() + " " + startTime.getText().toString();
+                    final String TEdatime = endDate.getText().toString() + " " + endTime.getText().toString();
+                    final String TOname = Norder.getText().toString();
+                    Query query = refFamily.orderByChild("familyUname").equalTo(familyUname2);
+                    ValueEventListener addTask = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                Family family = data.getValue(Family.class);
+                                Task task = new Task(Tdes, TSdatime, TEdatime, TOname, true,false);
+                                family.addTask(task);
+                                family.setNotificition(1);
+                                moveToService(1);
+                                refFamily.child(familyUname2).setValue(family);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                };
-                query.addListenerForSingleValueEvent(addTask);
+                        }
+                    };
+                    query.addListenerForSingleValueEvent(addTask);
 
+                }
             }
-        }
-    };
+        };
+
+    public void moveToService(int i) {
+        Intent serviceIntent = new Intent(this, ExmpleService.class);
+        serviceIntent.putExtra("a",i);
+        serviceIntent.putExtra("b",taskDes);
+        startService(serviceIntent);
+    }
+
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -210,6 +220,8 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
 
     public void active1(View view) {
         if (active.isChecked()) {
+            final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+            final SharedPreferences.Editor editor =settings.edit();
             active.setText("active");
             active.setTextColor(Color.GREEN);
             Query query = refFamily.orderByChild("familyUname").equalTo(familyUname2);
@@ -225,12 +237,15 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                     while (!taskValue2.isEmpty()) {
                         Task task = taskValue2.remove(0);
                         if (task.getTeur().equals(taskHelp)) {
+                            task.setCurrentActive(true);
                             task.setActive(true);
                         }
                         tasksHelper.add(task);
                     }
                     family2.setTasks(tasksHelper);
+                    family2.setNotificition(2);
                     refFamily.child(familyUname2).setValue(family2);
+                    moveToService(2);
                 }
 
                 @Override
@@ -274,25 +289,25 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        final String taskHelper2=(String) tasks.getItemAtPosition(i);
-        Query query=refFamily.orderByChild("familyUname").equalTo(familyUname2);
-        ValueEventListener removeValue=new ValueEventListener() {
+        final String taskHelper2 = (String) tasks.getItemAtPosition(i);
+        Query query = refFamily.orderByChild("familyUname").equalTo(familyUname2);
+        ValueEventListener removeValue = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               for (DataSnapshot data:dataSnapshot.getChildren()){
-                   Family family=data.getValue(Family.class);
-                   ArrayList<Task> taskValue2 = family.getTasks();
-                   ArrayList<Task> tasksHelper = new ArrayList<>();
-                   tasksHelper.add(taskValue2.remove(0));
-                   while (!taskValue2.isEmpty()) {
-                       Task task = taskValue2.remove(0);
-                       if (!task.getTeur().equals(taskHelper2)) {
-                           tasksHelper.add(task);
-                       }
-                   }
-                   family.setTasks(tasksHelper);
-                   refFamily.child(familyUname2).setValue(family);
-               }
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Family family = data.getValue(Family.class);
+                    ArrayList<Task> taskValue2 = family.getTasks();
+                    ArrayList<Task> tasksHelper = new ArrayList<>();
+                    tasksHelper.add(taskValue2.remove(0));
+                    while (!taskValue2.isEmpty()) {
+                        Task task = taskValue2.remove(0);
+                        if (!task.getTeur().equals(taskHelper2)) {
+                            tasksHelper.add(task);
+                        }
+                    }
+                    family.setTasks(tasksHelper);
+                    refFamily.child(familyUname2).setValue(family);
+                }
             }
 
             @Override
@@ -303,53 +318,53 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         query.addListenerForSingleValueEvent(removeValue);
         return true;
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
 
-    public boolean onOptionsItemSelected(MenuItem Item){
-        final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-        String st=Item.getTitle().toString();
-        if(st.equals("family tasks")){
+    public boolean onOptionsItemSelected(MenuItem Item) {
+        final SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        String st = Item.getTitle().toString();
+        if (st.equals("family tasks")) {
             Intent go = new Intent(this, Matalot.class);
-            go.putExtra("a",settings.getString("currentFamily",""));
+            go.putExtra("a", settings.getString("currentFamily", ""));
             startActivity(go);
         }
-        if (st.equals("family lists")){
+        if (st.equals("family lists")) {
             Intent go = new Intent(this, Reshimot.class);
-            go.putExtra("a",settings.getString("currentFamily",""));
+            go.putExtra("a", settings.getString("currentFamily", ""));
             startActivity(go);
         }
-        if (st.equals("log out")){
-            SharedPreferences.Editor editor=settings.edit();
-            editor.putBoolean("haveFamily",false);
-            editor.putBoolean("stayConnect",false);
+        if (st.equals("log out")) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean("haveFamily", false);
+            editor.putBoolean("stayConnect", false);
             Intent go = new Intent(this, Connect.class);
             startActivity(go);
         }
-        if (st.equals("leave family")){
-            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
-            ValueEventListener leaveFamily=new ValueEventListener() {
+        if (st.equals("leave family")) {
+            Query query = refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily", ""));
+            ValueEventListener leaveFamily = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data:dataSnapshot.getChildren()){
-                        Family family=data.getValue(Family.class);
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        Family family = data.getValue(Family.class);
                         ArrayList<User> UserValue2 = family.getUsers();
                         ArrayList<User> usersHelper = new ArrayList<>();
                         User user = null;
                         while (!UserValue2.isEmpty()) {
                             user = UserValue2.remove(0);
-                            if (!user.getUid().equals(settings.getString("currentUser",""))) {
+                            if (!user.getUid().equals(settings.getString("currentUser", ""))) {
                                 usersHelper.add(user);
                             }
                         }
                         family.setUsers(usersHelper);
                         if (family.getUsers().isEmpty()) {
                             refFamily.child(familyUname2).removeValue();
-                        }
-                        else {
+                        } else {
                             refFamily.child(familyUname2).setValue(family);
                         }
                         SharedPreferences.Editor editor = settings.edit();
@@ -359,61 +374,51 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                         returnToFamily(user);
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             };
             query.addListenerForSingleValueEvent(leaveFamily);
         }
-        if(st.equals("change family")){
-            Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
-            ValueEventListener leaveFamily=new ValueEventListener() {
+        if (st.equals("change family")) {
+            Query query = refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily", ""));
+            ValueEventListener leaveFamily = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data:dataSnapshot.getChildren()){
-                        Family family=data.getValue(Family.class);
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        Family family = data.getValue(Family.class);
                         User user = null;
                         while (!family.getUsers().isEmpty()) {
                             user = (User) family.getUsers().remove(0);
-                            if (user.getUid().equals(settings.getString("currentUser",""))) {
+                            if (user.getUid().equals(settings.getString("currentUser", ""))) {
                                 returnToFamily(user);
                             }
                         }
 
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             };
             query.addListenerForSingleValueEvent(leaveFamily);
         }
-        if(st.equals("new requests")){
-            Intent go=new Intent(this,Requests.class);
-            go.putExtra("a",familyUname2);
+        if (st.equals("new requests")) {
+            Intent go = new Intent(this, Requests.class);
+            go.putExtra("a", familyUname2);
             startActivity(go);
         }
         return true;
     }
-    public void returnToFamily(User user1){
+
+    public void returnToFamily(User user1) {
         Intent getUser = new Intent(this, YourFamily.class);
         getUser.putExtra("a", user1.getUid());
         getUser.putExtra("b", user1.getName());
         getUser.putExtra("c", user1.getPassword());
         getUser.putExtra("d", user1.getEmail());
         startActivity(getUser);
-    }
-    private void createNotificationChannel(){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            CharSequence name = "personal notification";
-            String description= "include all the personal notifications";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,name,importance);
-            notificationChannel.setDescription(description);
-            NotificationManager notificationManager =(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
     }
 }
