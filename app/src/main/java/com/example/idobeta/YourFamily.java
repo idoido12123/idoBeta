@@ -152,10 +152,10 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                     family.addTask(task);
                     family.addList(list);
                     family.addRequest(request);
-                    family.setNotificition(0);
+                    family.setNotificition(3);
                     refFamily.child(family.getFamilyUname()).setValue(family);
                     flag2 = true;
-                    moveToReshimot(flag2);
+                    moveToReshimot();
                 }
                 flag = false;
                 flag2 = false;
@@ -184,8 +184,10 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                         if(user.getEmail().equals(userEmail)){
                             flag2=true;
                         }
+                        userHelper.add(user);
                     }
-                    moveToReshimot(flag2);
+                    family.setUsers(userHelper);
+                    moveToReshimot();
                     flag2=false;
                 }
             }
@@ -235,7 +237,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             Log.w("YourFamily", "Failed to read value.", databaseError.toException());
         }
     };
-    public void moveToReshimot(boolean flag){
+    public void moveToReshimot(){
         if (flag2==false){
             Toast.makeText(this, "you are not a member in this family", Toast.LENGTH_SHORT).show();
         }
@@ -245,6 +247,10 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             editor.putBoolean("haveFamily",true);
             editor.putString("currentFamily",family.getFamilyUname());
             editor.commit();
+            family.setNotificition(3);
+            refFamily.child(family.getFamilyUname()).setValue(family);
+            Intent serviceIntent = new Intent(this, ExmpleService.class);
+            startService(serviceIntent);
             t3=new Intent(this,Reshimot.class);
             t3.putExtra("a",(String) family.getFamilyUname());
             startActivity(t3);

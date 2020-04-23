@@ -275,7 +275,9 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                         tasksHelper.add(task);
                     }
                     family2.setTasks(tasksHelper);
+                    family2.setNotificition(0);
                     refFamily.child(familyUname2).setValue(family2);
+                    moveToService(0);
                 }
 
                 @Override
@@ -339,6 +341,8 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
             startActivity(go);
         }
         if (st.equals("log out")) {
+            Intent serviceIntent = new Intent(this, ExmpleService.class);
+            stopService(serviceIntent);
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean("haveFamily", false);
             editor.putBoolean("stayConnect", false);
@@ -346,6 +350,8 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
             startActivity(go);
         }
         if (st.equals("leave family")) {
+            Intent serviceIntent = new Intent(this, ExmpleService.class);
+            stopService(serviceIntent);
             Query query = refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily", ""));
             ValueEventListener leaveFamily = new ValueEventListener() {
                 @Override

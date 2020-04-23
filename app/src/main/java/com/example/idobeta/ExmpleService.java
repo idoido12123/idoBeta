@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
@@ -44,7 +45,7 @@ public class ExmpleService extends Service {
                         family = data.getValue(Family.class);
                         int flag=family.getNotificition();
                         if ( flag == 0  ) {
-                            input = "you dont have new task (:";
+                            input= "one of the tasks was done!";
                             startService1(0);
                         }
                         if(flag==2){
@@ -53,8 +54,9 @@ public class ExmpleService extends Service {
                             while (!family.getTasks().isEmpty()){
                                 Task task=family.getTasks().remove(0);
                                     if(task.isCurrentActive()){
-                                        input="the task "+task.getTeur()+" is active!!";
+                                        input="the task "+task.getTeur()+" is active! please do it!";
                                     }
+                                    taskValue.add(task);
                                 }
                             startService1(2);
                         }
@@ -69,6 +71,10 @@ public class ExmpleService extends Service {
                                 taskValue.add(task);
                             }
                             startService1(1);
+                        }
+                        if ( flag == 3  ) {
+                            input= "here you can see your family new tasks";
+                            startService1(3);
                         }
                     }
                 }
@@ -90,7 +96,7 @@ public class ExmpleService extends Service {
             family.setTasks(taskValue);
         }
         refFamily.child(settings.getString("currentFamily","")).setValue(family);
-        if (i == 0 || i == 1 || i == 2) {
+        if (i == 0 || i == 1 || i == 2||i==3) {
             Intent notificationIntent = new Intent(this, Matalot.class);
             notificationIntent.putExtra("a", settings.getString("currentFamily", "a"));
             PendingIntent pendingIntent = PendingIntent.getActivity(this,

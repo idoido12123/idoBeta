@@ -192,6 +192,8 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
            startActivity(go);
         }
         if (st.equals("log out")){
+            Intent serviceIntent = new Intent(this, ExmpleService.class);
+            stopService(serviceIntent);
             SharedPreferences.Editor editor=settings.edit();
             editor.putBoolean("haveFamily",false);
             editor.putBoolean("stayConnect",false);
@@ -200,6 +202,8 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             startActivity(go);
         }
         if (st.equals("leave family")){
+            Intent serviceIntent = new Intent(this, ExmpleService.class);
+            stopService(serviceIntent);
             Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
             ValueEventListener leaveFamily=new ValueEventListener() {
                 @Override
@@ -236,8 +240,6 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
             query.addListenerForSingleValueEvent(leaveFamily);
         }
         if(st.equals("change family")){
-            Intent serviceIntent = new Intent(this,ExmpleService.class);
-            stopService(serviceIntent);
             Query query=refFamily.orderByChild("familyUname").equalTo(settings.getString("currentFamily",""));
             ValueEventListener leaveFamily=new ValueEventListener() {
                 @Override
