@@ -90,6 +90,10 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         BigList.setOnItemLongClickListener(this);
     }
 
+    /**
+     * start "create new list" alert dialog.
+     * @param view
+     */
     public void newList(View view) {
         listDialog = (LinearLayout) getLayoutInflater().inflate(R.layout.add_list_dialog, null);
         Nreshima = (EditText) listDialog.findViewById(R.id.Nreshima);
@@ -102,6 +106,9 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         addList.show();
     }
 
+    /**
+     * create new list
+     */
     DialogInterface.OnClickListener OKclick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
@@ -132,6 +139,13 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         }
     };
 
+    /**
+     * remove to activity chosen list to see the list's products.
+     * @param Adapter
+     * @param view
+     * @param i
+     * @param l
+     */
     @Override
     public void onItemClick(AdapterView<?> Adapter, View view, int i, long l) {
         Intent chosenList = new Intent(this, ChosenList.class);
@@ -139,6 +153,15 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         chosenList.putExtra("b", familyName1);
         startActivity(chosenList);
     }
+
+    /**
+     * delete the chosen list.
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     * @return
+     */
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         listNhelper = (String) BigList.getItemAtPosition(i);
@@ -177,7 +200,11 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
         return true;
     }
 
-
+    /**
+     * start menu.
+     * @param Item
+     * @return
+     */
     public boolean onOptionsItemSelected(MenuItem Item){
         final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         String st=Item.getTitle().toString();

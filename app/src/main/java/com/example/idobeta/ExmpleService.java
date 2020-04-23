@@ -89,6 +89,11 @@ public class ExmpleService extends Service {
             query.addValueEventListener(taskAdd);
         return START_NOT_STICKY;
     }
+
+    /**
+     * start service
+     * @param i
+     */
     public void startService1(int i) {
         SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
         family.setNotificition(4);
@@ -108,6 +113,9 @@ public class ExmpleService extends Service {
         }
     }
 
+    /**
+     * stop service.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

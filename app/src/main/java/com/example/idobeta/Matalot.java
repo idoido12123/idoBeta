@@ -47,8 +47,6 @@ import static com.example.idobeta.FBref.refFamily;
 import static com.example.idobeta.FBref.refTasks;
 
 public class Matalot extends AppCompatActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
-    final String CHANNEL_ID = "new notification";
-    final int NOTIFICATION_ID = 001;
     AlertDialog.Builder addTask;
     AlertDialog.Builder showTask;
     LinearLayout TaskDialog;
@@ -114,6 +112,10 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         tasks.setOnItemLongClickListener(this);
     }
 
+    /**
+     * start "create new task" alert dialog.
+     * @param view
+     */
     public void newTask(View view) {
         TaskDialog = (LinearLayout) getLayoutInflater().inflate(R.layout.new_task, null);
         Ntask = (EditText) TaskDialog.findViewById(R.id.taskDes);
@@ -128,6 +130,10 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         addTask.setPositiveButton("OK", OKclick);
         addTask.show();
     }
+
+    /**
+     * create new task and send the family members notification about it.
+     */
         DialogInterface.OnClickListener OKclick = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -146,7 +152,7 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                                 Task task = new Task(Tdes, TSdatime, TEdatime, TOname, true,false);
                                 family.addTask(task);
                                 family.setNotificition(1);
-                                moveToService(1);
+                                moveToService();
                                 refFamily.child(familyUname2).setValue(family);
                             }
                         }
@@ -162,14 +168,21 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
             }
         };
 
-    public void moveToService(int i) {
+    /**
+     * start service.
+     */
+    public void moveToService() {
         Intent serviceIntent = new Intent(this, ExmpleService.class);
-        serviceIntent.putExtra("a",i);
-        serviceIntent.putExtra("b",taskDes);
         startService(serviceIntent);
     }
 
-
+    /**
+     * start the alert dialog that show details about the chosen task.
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
         showTaskDialog = (LinearLayout) getLayoutInflater().inflate(R.layout.show_task, null);
@@ -218,6 +231,10 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         query.addListenerForSingleValueEvent(showTaskL);
     }
 
+    /**
+     * change the task to active or not active and send the user notification about it.
+     * @param view
+     */
     public void active1(View view) {
         if (active.isChecked()) {
             final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
@@ -245,7 +262,7 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                     family2.setTasks(tasksHelper);
                     family2.setNotificition(2);
                     refFamily.child(familyUname2).setValue(family2);
-                    moveToService(2);
+                    moveToService();
                 }
 
                 @Override
@@ -277,7 +294,7 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
                     family2.setTasks(tasksHelper);
                     family2.setNotificition(0);
                     refFamily.child(familyUname2).setValue(family2);
-                    moveToService(0);
+                    moveToService();
                 }
 
                 @Override
@@ -289,6 +306,14 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         }
     }
 
+    /**
+     * delete the chosen task.
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     * @return
+     */
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         final String taskHelper2 = (String) tasks.getItemAtPosition(i);
@@ -326,7 +351,11 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         return true;
     }
 
-
+    /**
+     * start menu.
+     * @param Item
+     * @return
+     */
     public boolean onOptionsItemSelected(MenuItem Item) {
         final SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
         String st = Item.getTitle().toString();
@@ -419,6 +448,10 @@ public class Matalot extends AppCompatActivity implements AdapterView.OnItemClic
         return true;
     }
 
+    /**
+     * return to activity "YourFamily".
+     * @param user1
+     */
     public void returnToFamily(User user1) {
         Intent getUser = new Intent(this, YourFamily.class);
         getUser.putExtra("a", user1.getUid());

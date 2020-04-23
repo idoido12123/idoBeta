@@ -114,6 +114,11 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         products.setOnItemLongClickListener(this);
         products.setOnItemClickListener(this);
 }
+
+    /**
+     * start "add new product" alert dialog.
+     * @param view
+     */
     public void newProduct(View view) {
         productDialog = (LinearLayout) getLayoutInflater().inflate(R.layout.add_product, null);
         productName = (EditText) productDialog.findViewById(R.id.productName);
@@ -125,6 +130,10 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         addProduct1.setPositiveButton("OK", OKclick1);
         addProduct1.show();
     }
+
+    /**
+     * add new product to the list.
+     */
     DialogInterface.OnClickListener OKclick1 = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
@@ -165,6 +174,14 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         }
     };
 
+    /**
+     * delete product from the list.
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     * @return
+     */
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, final long l) {
          Query query = refFamily.orderByChild("familyUname").equalTo(familyName);
@@ -206,6 +223,13 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         return true;
     }
 
+    /**
+     * start "chnge amount" alert dialog and change the amount"
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         position=i;
@@ -263,6 +287,11 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
             }
         }
     };
+
+    /**
+     * start "remove list" alert dialog.
+     * @param view
+     */
     public void removeProducts(View view){
         editListDialog = (LinearLayout) getLayoutInflater().inflate(R.layout.edit_list, null);
         editListName = (EditText) editListDialog.findViewById(R.id.editName);
@@ -272,6 +301,10 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         addProduct1.setPositiveButton("OK", OKclick3);
         addProduct1.show();
     }
+
+    /**
+     * remove the list's products to another list.
+     */
     DialogInterface.OnClickListener OKclick3 = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
@@ -338,7 +371,11 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         return true;
     }
 
-
+    /**
+     * start menu.
+     * @param Item
+     * @return
+     */
     public boolean onOptionsItemSelected(MenuItem Item){
         final SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         String st=Item.getTitle().toString();

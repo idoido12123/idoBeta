@@ -59,6 +59,10 @@ public class Connect extends AppCompatActivity {
         mAuth1 = FirebaseAuth.getInstance();
     }
 
+    /**
+     * change the activity to "login" or "Register".
+     * @param view
+     */
     public void OnSwitch(View view) {
         if (switch1.isChecked()) {
             switch1.setText("don't have an account? click off and join us!");
@@ -74,6 +78,10 @@ public class Connect extends AppCompatActivity {
 
     }
 
+    /**
+     * create new user or login user.
+     * @param view
+     */
     public void click(View view) {
         if (finish1.getText().equals("join us!")) {
             email1 = email.getText().toString();
@@ -134,6 +142,10 @@ public class Connect extends AppCompatActivity {
         }
     }
 
+    /**
+     * remove to activity "YourFamily".
+     * @param user1
+     */
     public void ChooseFamily(User user1) {
         Intent getUser = new Intent(this, YourFamily.class);
         getUser.putExtra("a", user1.getUid());

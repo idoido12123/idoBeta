@@ -162,10 +162,18 @@ public class Family {
             requests.add(user);
     }
 
+    /**
+     * get the flag number of the notification.
+     * @return
+     */
     public int getNotificition() {
         return notificition;
     }
 
+    /**
+     * change the notification number.
+     * @param notificition
+     */
     public void setNotificition(int notificition) {
         this.notificition = notificition;
     }

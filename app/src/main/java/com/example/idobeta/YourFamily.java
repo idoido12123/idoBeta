@@ -106,7 +106,10 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         user = new User(userID, userName, userPass, userEmail);
     }
 
-
+    /**
+     * change the activity to "create family" or "choose family".
+     * @param view
+     */
     public void onSwitch2(View view) {
         if (!switch2.isChecked()) {
             listV.setVisibility(View.VISIBLE);
@@ -127,6 +130,10 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         }
     }
 
+    /**
+     * check if the family user name is exist,if not it create new family.
+     * @param view
+     */
     public void click4(View view) {
         str = UFname.getText().toString();
         Query query = refFamily.orderByChild("familyUname").equalTo(str);
@@ -169,6 +176,13 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         }
     };
 
+    /**
+     * check if the user is in the family,if yes go to family lists, if not make toast.
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         position=i;
@@ -199,6 +213,14 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         query.addListenerForSingleValueEvent(checkUser);
     }
 
+    /**
+     * send the chosen family requests to join her.
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     * @return
+     */
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         position=i;
@@ -237,6 +259,10 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
             Log.w("YourFamily", "Failed to read value.", databaseError.toException());
         }
     };
+
+    /**
+     * if flag2 is true, go to family lists, if not make toast.
+     */
     public void moveToReshimot(){
         if (flag2==false){
             Toast.makeText(this, "you are not a member in this family", Toast.LENGTH_SHORT).show();
@@ -266,6 +292,12 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
         menu.findItem(R.id.menuLists).setTitle("return to current family lists");
         return true;
     }
+
+    /**
+     * start menu.
+     * @param Item
+     * @return true
+     */
     public boolean onOptionsItemSelected(MenuItem Item) {
         final SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
         String st = Item.getTitle().toString();

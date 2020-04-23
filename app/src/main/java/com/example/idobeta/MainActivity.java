@@ -44,15 +44,28 @@ public class MainActivity extends AppCompatActivity {
            gotoConnect();
        }
     }
+
+    /**
+     * go to activity "Connect".
+     */
     public void gotoConnect(){
         Intent t1 = new Intent(this, Connect.class);
         startActivity(t1);
     }
+
+    /**
+     * go to the user's current family lists
+     * @param familyName
+     */
     public void gotoReshimot(String familyName){
         Intent gotoReshimot1 = new Intent(this, Reshimot.class);
         gotoReshimot1.putExtra("a", familyName);
         startActivity(gotoReshimot1);
     }
+
+    /**
+     * get the current login user
+     */
     public void getUser(){
         mAuth1 = FirebaseAuth.getInstance();
         FirebaseUser fbuser = mAuth1.getCurrentUser();
@@ -74,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
         };
         query.addListenerForSingleValueEvent(getfamily);
     }
+
+    /**
+     * go to activity "YourFamily".
+     * @param user
+     */
     public void gotoYourFamily(User user){
         Intent getUser = new Intent(this, YourFamily.class);
         getUser.putExtra("a", user.getUid());
