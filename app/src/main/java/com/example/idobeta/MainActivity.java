@@ -19,36 +19,63 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Time;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static com.example.idobeta.FBref.refUsers;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth1;
     User user;
+    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        timer= new Timer();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         final SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
         boolean isChecked = settings.getBoolean("stayConnect", false);
         boolean haveFamily = settings.getBoolean("haveFamily", false);
         if (isChecked) {
             if (haveFamily) {
-                gotoReshimot(settings.getString("currentFamily", ""));
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        gotoReshimot(settings.getString("currentFamily", ""));
+                    }
+                },1500);
             }
             else {
-               getUser();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        getUser();
+                    }
+                },1500);
             }
         }
-       else{
-           gotoConnect();
-       }
+        else{
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    gotoConnect();
+                }
+            }, 1500);
+        }
+
     }
 
     /**
      * go to activity "Connect".
      */
-    public void gotoConnect(){
+    public void gotoConnect() {
         Intent t1 = new Intent(this, Connect.class);
         startActivity(t1);
     }
