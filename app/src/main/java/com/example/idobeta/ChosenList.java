@@ -8,8 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,38 +22,23 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 import static com.example.idobeta.FBref.refFamily;
-import static com.example.idobeta.FBref.refShopLists;
 
 public class ChosenList extends AppCompatActivity implements AdapterView.OnItemLongClickListener,AdapterView.OnItemClickListener {
-    AlertDialog.Builder addProduct1;
-    AlertDialog.Builder changeAmount;
-    AlertDialog.Builder editList1;
-    LinearLayout editListDialog;
-    LinearLayout productDialog;
-    LinearLayout changeAmountDialog;
+    AlertDialog.Builder addProduct1,changeAmount,removeProducts;
+    LinearLayout editListDialog,productDialog,changeAmountDialog;
     Button addProduct;
     ListView products;
     TextView title;
-    String lName;
-    String familyName;
+    String lName,familyName;
     Intent getList1;
     ArrayList<Product> productsValues = new ArrayList<>();
     ArrayList<String> productsList = new ArrayList<>();
-    EditText productName;
-    EditText productAmount;
-    EditText orderName;
-    EditText newAmount;
-    EditText editListName;
+    EditText productName,productAmount,orderName,newAmount,editListName;
     String date="";
     ArrayList<NewList>shopValues=new ArrayList<>();
     ArrayList<NewList>listsHelper=new ArrayList<>();
@@ -124,11 +107,11 @@ public class ChosenList extends AppCompatActivity implements AdapterView.OnItemL
         productName = (EditText) productDialog.findViewById(R.id.productName);
         productAmount = (EditText) productDialog.findViewById(R.id.productAmount);
         orderName = (EditText) productDialog.findViewById(R.id.orderName);
-        addProduct1 = new AlertDialog.Builder(this);
-        addProduct1.setView(productDialog);
-        addProduct1.setTitle("add new product");
-        addProduct1.setPositiveButton("OK", OKclick1);
-        addProduct1.show();
+        removeProducts = new AlertDialog.Builder(this);
+        removeProducts.setView(productDialog);
+        removeProducts.setTitle("add new product");
+        removeProducts.setPositiveButton("OK", OKclick1);
+        removeProducts.show();
     }
 
     /**

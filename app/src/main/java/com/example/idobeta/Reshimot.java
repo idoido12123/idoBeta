@@ -34,16 +34,13 @@ public class Reshimot extends AppCompatActivity implements AdapterView.OnItemCli
     AlertDialog.Builder addList;
     LinearLayout listDialog;
     TextView title;
-    EditText Nreshima;
-    EditText ListDate;
-    EditText ListTime;
+    EditText Nreshima,ListDate,ListTime;
     Button NewList;
     ListView BigList;
     Intent t4;
-    String familyName1;
+    String familyName1,listNhelper;
     ArrayList<String> ShopList = new ArrayList<>();
     ArrayList<NewList> ShopValues = new ArrayList<>();
-    String listNhelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

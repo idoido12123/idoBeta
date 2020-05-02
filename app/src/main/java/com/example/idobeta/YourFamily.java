@@ -11,14 +11,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,26 +26,19 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static com.example.idobeta.FBref.refFamily;
-import static com.example.idobeta.FBref.refUsers;
 
 public class YourFamily extends AppCompatActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
     Switch switch2;
-    EditText lastName;
-    EditText UFname;
+    EditText lastName,UFname;
     ListView listV;
-    TextView tv1;
-    TextView title;
+    TextView tv1,title;
     ArrayList<Family> FamilyValues = new ArrayList<Family>();
     ArrayList<String> FamilyList = new ArrayList<String>();
     Button signIn;
     Intent t3;
-    String userName;
-    String userID;
-    String userEmail;
-    String userPass;
+    String userName,userID,userEmail,userPass;
     User user;
     boolean flag = false;
     boolean flag2 = false;
@@ -148,7 +138,7 @@ public class YourFamily extends AppCompatActivity implements AdapterView.OnItemC
                     flag = true;
                 }
                 if (flag == true) {
-                    Toast.makeText(YourFamily.this, "enter another family name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(YourFamily.this, "enter another family user name", Toast.LENGTH_SHORT).show();
                 }
                 if (flag == false) {
                     family = new Family(lastName.getText().toString(), str,0);

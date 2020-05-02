@@ -33,14 +33,10 @@ import static com.example.idobeta.FBref.refFamily;
 import static com.example.idobeta.FBref.refUsers;
 
 public class Connect extends AppCompatActivity {
-    CheckBox checkBox;
     Switch switch1;
-    EditText name;
-    EditText email;
-    EditText pass;
+    EditText name,email,pass;
     private FirebaseAuth mAuth1;
-    String email1;
-    String password;
+    String email1,password;
     Button finish1;
     TextView tvtitle;
     User user1;
